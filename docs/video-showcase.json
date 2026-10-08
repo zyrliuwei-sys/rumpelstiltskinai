@@ -1,0 +1,55 @@
+{
+  "model": "doubao-seedance-1.0-pro-fast",
+  "quality": "480p",
+  "duration": 5,
+  "clips": [
+    {
+      "name": "castle",
+      "prompt": "An original cinematic dark fairy tale: Rumpelstiltskin, a tiny mischievous goblin with pointed ears, a crooked grin, wiry hair and a weathered burgundy coat, tiptoe dances in a candlelit medieval stone castle. Full body visible, nimble alternating toe steps and one playful spin, flowing coat, warm candle gold against charcoal shadows, realistic handcrafted fantasy creature, subtle film grain, slow camera push in, elegant composition, no text, no watermark.",
+      "status": "completed",
+      "taskId": "task-unified-1791451843-w7gzzbuq",
+      "usage": {
+        "cost": {
+          "credits": 1.8,
+          "usd": 0.027,
+          "cny": 0.18
+        },
+        "credits_used": 1.8
+      },
+      "file": "/videos/rumpelstiltskin-castle.mp4",
+      "bytes": 3257179
+    },
+    {
+      "name": "forest",
+      "prompt": "An original cinematic fairy tale: Rumpelstiltskin, a tiny mischievous goblin with pointed ears, wiry hair and a weathered burgundy coat, tiptoe dances on moss in an enchanted night forest. Full body visible, playful toe steps and a small twirl, glowing fireflies, moonlit mist and warm golden sparks, realistic handcrafted fantasy creature, subtle film grain, steady camera, elegant composition, no text, no watermark.",
+      "status": "completed",
+      "taskId": "task-unified-1791451843-ikdpuiuy",
+      "usage": {
+        "cost": {
+          "credits": 1.8,
+          "usd": 0.027,
+          "cny": 0.18
+        },
+        "credits_used": 1.8
+      },
+      "file": "/videos/rumpelstiltskin-forest.mp4",
+      "bytes": 2861680
+    },
+    {
+      "name": "ballroom",
+      "prompt": "An original cinematic fairy tale: Rumpelstiltskin, a tiny mischievous goblin with pointed ears, a crooked grin, wiry hair and a weathered burgundy coat, performs a joyful tiptoe dance in an abandoned royal ballroom. Full body visible, nimble toe steps then a playful spin, ornate gold mirrors, candle chandeliers, drifting dust, warm amber light and charcoal shadows, realistic handcrafted fantasy creature, subtle film grain, slow camera movement, no text, no watermark.",
+      "status": "completed",
+      "taskId": "task-unified-1791451843-d7edijmi",
+      "usage": {
+        "cost": {
+          "credits": 1.8,
+          "usd": 0.027,
+          "cny": 0.18
+        },
+        "credits_used": 1.8
+      },
+      "file": "/videos/rumpelstiltskin-ballroom.mp4",
+      "bytes": 2257198
+    }
+  ]
+}

@@ -2,6 +2,7 @@ import { ArrowUpRight, Film, Focus, MoveUpRight } from 'lucide-react';
 
 import { Link } from '@/core/i18n/navigation';
 import { m } from '@/paraglide/messages.js';
+import { ShowcaseVideo, showcaseVideos } from '@/components/showcase-video';
 
 export function RumpelIntroduction() {
   return (
@@ -80,12 +81,9 @@ export function RumpelUseCases() {
       <h2>{m['rumpel.seo.uses_title']()}</h2>
       <div className="rumpel-usecase-layout">
         <figure>
-          <img
-            src="/imgs/generated/rumpelstiltskin-forest.webp"
-            width="900"
-            height="600"
-            loading="lazy"
-            alt={m['rumpel.seo.uses_alt']()}
+          <ShowcaseVideo
+            src={showcaseVideos.forest}
+            label={m['rumpel.seo.uses_alt']()}
           />
           <figcaption>{m['rumpel.hero.art_caption']()}</figcaption>
         </figure>

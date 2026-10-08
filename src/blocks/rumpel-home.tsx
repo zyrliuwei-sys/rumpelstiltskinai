@@ -21,9 +21,14 @@ import {
 } from '@/blocks/rumpel-editorial';
 import { BuiltWithShipAny } from '@/components/built-with-shipany';
 import { LocaleSelector } from '@/components/locale-selector';
+import {
+  ShowcasePlaybackControl,
+  ShowcaseVideo,
+  showcaseVideos,
+} from '@/components/showcase-video';
 import { SiteUserMenu } from '@/components/site-user-menu';
 
-const heroImage = '/imgs/generated/rumpelstiltskin-hero.webp';
+const heroImage = showcaseVideos.castle;
 function startPreset(preset: string, prompt: string) {
   try {
     sessionStorage.setItem('rumpel-prompt', prompt);
@@ -62,20 +67,11 @@ export function RumpelHeader() {
         </nav>
         <div className="rumpel-nav-actions">
           <LocaleSelector />
-          {!sessionPending && (
-            <Link
-              href={user ? '/settings/videos' : '/sign-in'}
-              className="rumpel-login"
-            >
-              {user
-                ? m['rumpel.nav.library']()
-                : m['common.sign.sign_in_title']()}
+          {!sessionPending && !user && (
+            <Link href="/sign-in" className="rumpel-login">
+              {m['common.sign.sign_in_title']()}
             </Link>
           )}
-          <Link href="/create" className="rumpel-button rumpel-button-small">
-            {m['rumpel.nav.create']()}
-            <ArrowUpRight size={15} />
-          </Link>
         </div>
         {user && (
           <SiteUserMenu
@@ -101,14 +97,9 @@ export function RumpelHeader() {
               {l.label}
             </Link>
           ))}
-          {!sessionPending && (
-            <Link
-              href={user ? '/settings/videos' : '/sign-in'}
-              onClick={() => setOpen(false)}
-            >
-              {user
-                ? m['rumpel.nav.library']()
-                : m['common.sign.sign_in_title']()}
+          {!sessionPending && !user && (
+            <Link href="/sign-in" onClick={() => setOpen(false)}>
+              {m['common.sign.sign_in_title']()}
             </Link>
           )}
           <LocaleSelector />
@@ -148,15 +139,17 @@ export function RumpelHero() {
   }
   return (
     <section className="rumpel-hero">
-      <img
+      <ShowcaseVideo
         className="rumpel-hero-image"
         src={heroImage}
-        width="1672"
-        height="941"
-        alt={m['rumpel.hero.image_alt']()}
-        fetchPriority="high"
+        label={m['rumpel.hero.image_alt']()}
+        controls={false}
       />
       <div className="rumpel-hero-shade" />
+      <ShowcasePlaybackControl
+        pauseLabel={m['rumpel.video.pause']()}
+        playLabel={m['rumpel.video.play']()}
+      />
       <div className="rumpel-hero-content">
         <div className="rumpel-hero-copy">
           <p className="rumpel-eyebrow">
@@ -245,14 +238,14 @@ export function RumpelInspiration() {
     },
     {
       id: 'forest',
-      image: '/imgs/generated/rumpelstiltskin-forest.webp',
+      image: showcaseVideos.forest,
       title: m['rumpel.preset.forest'](),
       text: m['rumpel.examples.forest'](),
       prompt: m['rumpel.prompt.forest'](),
     },
     {
       id: 'ballroom',
-      image: '/imgs/generated/rumpelstiltskin-ballroom.webp',
+      image: showcaseVideos.ballroom,
       title: m['rumpel.preset.ballroom'](),
       text: m['rumpel.examples.ballroom'](),
       prompt: m['rumpel.prompt.ballroom'](),
@@ -275,13 +268,7 @@ export function RumpelInspiration() {
             }}
           >
             <div className="rumpel-example-image">
-              <img
-                src={c.image}
-                alt={c.title}
-                loading="lazy"
-                width="900"
-                height="600"
-              />
+              <ShowcaseVideo src={c.image} label={c.title} controls={false} />
               <span className="rumpel-example-action">
                 <ArrowUpRight size={24} />
               </span>
@@ -316,13 +303,13 @@ export function RumpelFeatures() {
     {
       title: m['rumpel.features.motion_title'](),
       text: m['rumpel.features.motion_text'](),
-      image: '/imgs/generated/rumpelstiltskin-forest.webp',
+      image: showcaseVideos.forest,
       prompt: m['rumpel.prompt.forest'](),
     },
     {
       title: m['rumpel.features.format_title'](),
       text: m['rumpel.features.format_text'](),
-      image: '/imgs/generated/rumpelstiltskin-ballroom.webp',
+      image: showcaseVideos.ballroom,
       prompt: m['rumpel.prompt.ballroom'](),
     },
   ];
@@ -366,13 +353,10 @@ export function RumpelFeatures() {
         aria-labelledby={`feature-tab-${tab}`}
         className="rumpel-feature-media"
       >
-        <img
+        <ShowcaseVideo
           key={tab}
           src={features[tab].image}
-          alt={features[tab].title}
-          loading="lazy"
-          width="900"
-          height="1000"
+          label={features[tab].title}
         />
         <div className="rumpel-feature-prompt">
           <WandSparkles size={16} />
@@ -421,13 +405,7 @@ export function RumpelStory() {
   return (
     <section className="rumpel-section rumpel-story">
       <div className="rumpel-story-image">
-        <img
-          src={heroImage}
-          alt={m['rumpel.story.alt']()}
-          loading="lazy"
-          width="800"
-          height="600"
-        />
+        <ShowcaseVideo src={heroImage} label={m['rumpel.story.alt']()} />
       </div>
       <div>
         <p className="rumpel-eyebrow">{m['rumpel.story.label']()}</p>

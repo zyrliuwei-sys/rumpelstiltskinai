@@ -16,6 +16,7 @@ import { Link } from '@/core/i18n/navigation';
 import { apiGet, apiPost } from '@/lib/api-client';
 import { m } from '@/paraglide/messages.js';
 import { RumpelFooter, RumpelHeader } from '@/blocks/rumpel-home';
+import { ShowcaseVideo, showcaseVideos } from '@/components/showcase-video';
 
 type Preset = 'castle' | 'forest' | 'ballroom' | 'custom';
 type Task = {
@@ -158,19 +159,19 @@ export function RumpelStudio({ publicPage = false }: { publicPage?: boolean }) {
       value: 'castle' as const,
       label: m['rumpel.studio.castle'](),
       prompt: m['rumpel.studio.castlePrompt'](),
-      image: '/imgs/generated/rumpelstiltskin-hero.webp',
+      image: showcaseVideos.castle,
     },
     {
       value: 'forest' as const,
       label: m['rumpel.studio.forest'](),
       prompt: m['rumpel.studio.forestPrompt'](),
-      image: '/imgs/generated/rumpelstiltskin-forest.webp',
+      image: showcaseVideos.forest,
     },
     {
       value: 'ballroom' as const,
       label: m['rumpel.studio.ballroom'](),
       prompt: m['rumpel.studio.ballroomPrompt'](),
-      image: '/imgs/generated/rumpelstiltskin-ballroom.webp',
+      image: showcaseVideos.ballroom,
     },
   ];
   const controlClass =
@@ -245,9 +246,10 @@ export function RumpelStudio({ publicPage = false }: { publicPage?: boolean }) {
                       className={`group relative overflow-hidden rounded-xl border text-left transition-all duration-200 motion-reduce:transition-none ${preset === item.value ? 'border-primary ring-primary ring-1' : 'border-border hover:border-muted-foreground'}`}
                     >
                       <div className="bg-secondary h-16">
-                        <img
+                        <ShowcaseVideo
                           src={item.image}
-                          alt=""
+                          label={item.label}
+                          controls={false}
                           className="h-full w-full object-cover opacity-80"
                         />
                       </div>
@@ -452,12 +454,12 @@ export function RumpelStudio({ publicPage = false }: { publicPage?: boolean }) {
                 />
               ) : (
                 <>
-                  <img
+                  <ShowcaseVideo
                     src={
                       presets.find((item) => item.value === preset)?.image ??
                       presets[0].image
                     }
-                    alt={m['rumpel.studio.concept']()}
+                    label={m['rumpel.studio.concept']()}
                     className="brand-preview-image absolute inset-0 h-full w-full object-cover"
                   />
                   {active && (
