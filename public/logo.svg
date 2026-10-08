@@ -1,5 +1,10 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
   <title>Rumpelstiltskin AI</title>
-  <path fill="#d9bc7a" fill-rule="evenodd" d="M11 31 28 9c1.5-2 4-2 5.5 0L43 25l9 4c3 1.4 2 5-1 5H13c-2.5 0-3.5-1.6-2-3Zm17-11v9l7-4.5-7-4.5Z"/>
-  <path fill="#d9bc7a" d="M24 39h13l-4 8 8 5 10-6c1.8-1 3.4.4 2.5 2.2L50 55c-1 2-3 3-5 3H33c-2 0-3.6-.7-5-2l-7-6 3-11Z"/>
+  <g fill="#e1bd75">
+    <path d="M15 26C19 16 25 7 35 5c6-1 11 1 14 5-8-1-12 3-13 7l9 9H15Z"/>
+    <rect x="11" y="28" width="42" height="5" rx="2.5"/>
+    <path fill-rule="evenodd" d="m9 36 10 3h26l10-3-4 12-7-3c-1 8-6 13-12 16-6-3-11-8-12-16l-7 3-4-12Zm19 8v11l10-5.5L28 44Z"/>
+    <ellipse cx="32" cy="37" rx="5" ry="4"/>
+    <path d="m53 9 1.8 4.2L59 15l-4.2 1.8L53 21l-1.8-4.2L47 15l4.2-1.8L53 9Z"/>
+  </g>
 </svg>
