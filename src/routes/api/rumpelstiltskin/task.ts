@@ -1,8 +1,9 @@
 import { createFileRoute } from '@tanstack/react-router';
 
 import { AIMediaType, FalProvider } from '@/core/ai';
+import { EvoLinkProvider } from '@/core/ai/evolink';
 import { getAuth } from '@/core/auth';
-import { RUMPELSTILTSKIN_MODEL } from '@/config/rumpelstiltskin';
+import { RUMPELSTILTSKIN_LEGACY_MODEL } from '@/config/rumpelstiltskin';
 import { AITaskStatus, findTask, updateTask } from '@/modules/ai-tasks/service';
 import { getAllConfigs } from '@/modules/config/service';
 import { respData, respErr } from '@/lib/resp';
@@ -21,9 +22,65 @@ async function GET({ request }: { request: Request }) {
     const task = await findTask(id);
     if (!task || !isStudioTask(task, session.user.id))
       return respErr('Task not found', { status: 404 });
-    if (!['pending', 'processing'].includes(task.status) || !task.taskId)
+    if (!['pending', 'processing'].includes(task.status))
       return respData(taskView(task));
+    if (!task.taskId) {
+      // Submission never returned a provider id (ambiguous network failure).
+      // After a grace period there is nothing to poll, so fail and refund.
+      if (Date.now() - new Date(task.createdAt).getTime() < 15 * 60_000)
+        return respData(taskView(task));
+      const taskResult = { error: 'Generation could not be started' };
+      await updateTask({
+        taskId: task.id,
+        status: AITaskStatus.FAILED,
+        taskResult,
+      });
+      return respData(
+        taskView({
+          ...task,
+          status: AITaskStatus.FAILED,
+          taskResult: JSON.stringify(taskResult),
+        })
+      );
+    }
     const configs = await getAllConfigs();
+    if (task.provider === 'evolink') {
+      if (!configs.evolink_api_key?.trim())
+        return respErr('Provider unavailable', { status: 503 });
+      try {
+        const result = await new EvoLinkProvider(configs.evolink_api_key).query(
+          task.taskId
+        );
+        const status =
+          result.status === 'completed'
+            ? AITaskStatus.SUCCESS
+            : result.status === 'failed' || result.status === 'cancelled'
+              ? AITaskStatus.FAILED
+              : result.status === 'processing'
+                ? AITaskStatus.PROCESSING
+                : AITaskStatus.PENDING;
+        const url = result.results?.[0];
+        if (
+          status === AITaskStatus.SUCCESS &&
+          (!url || !url.startsWith('https://'))
+        )
+          return respErr('Video is not ready yet', { status: 503 });
+        const taskResult =
+          status === AITaskStatus.SUCCESS ? { video: { url } } : undefined;
+        await updateTask({ taskId: task.id, status, taskResult });
+        return respData(
+          taskView({
+            ...task,
+            status,
+            ...(taskResult ? { taskResult: JSON.stringify(taskResult) } : {}),
+          })
+        );
+      } catch {
+        return respErr('Unable to check video status. Retry shortly.', {
+          status: 503,
+        });
+      }
+    }
     if (!configs.fal_api_key?.trim())
       return respErr('Generation provider is temporarily unavailable', {
         status: 503,
@@ -32,7 +89,7 @@ async function GET({ request }: { request: Request }) {
     try {
       const result = await provider.query({
         taskId: task.taskId,
-        model: RUMPELSTILTSKIN_MODEL,
+        model: RUMPELSTILTSKIN_LEGACY_MODEL,
         mediaType: AIMediaType.VIDEO,
       });
       // Fal can return COMPLETED with an explicit failure payload.

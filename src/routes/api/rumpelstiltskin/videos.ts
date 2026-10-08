@@ -1,10 +1,13 @@
 import { createFileRoute } from '@tanstack/react-router';
-import { and, count, desc, eq, isNull, like } from 'drizzle-orm';
+import { and, count, desc, eq, isNull, like, or } from 'drizzle-orm';
 
 import { getAuth } from '@/core/auth';
 import { db } from '@/core/db';
 import { aiTask, type AiTask } from '@/config/db/schema';
-import { RUMPELSTILTSKIN_MODEL } from '@/config/rumpelstiltskin';
+import {
+  RUMPELSTILTSKIN_LEGACY_MODEL,
+  RUMPELSTILTSKIN_MODEL,
+} from '@/config/rumpelstiltskin';
 import { respData, respErr } from '@/lib/resp';
 
 import { taskView } from './-shared';
@@ -29,8 +32,16 @@ async function GET({ request }: { request: Request }) {
       return respErr('Invalid pagination', { status: 400 });
     const where = and(
       eq(aiTask.userId, session.user.id),
-      eq(aiTask.model, RUMPELSTILTSKIN_MODEL),
-      eq(aiTask.provider, 'fal'),
+      or(
+        and(
+          eq(aiTask.model, RUMPELSTILTSKIN_MODEL),
+          eq(aiTask.provider, 'evolink')
+        ),
+        and(
+          eq(aiTask.model, RUMPELSTILTSKIN_LEGACY_MODEL),
+          eq(aiTask.provider, 'fal')
+        )
+      ),
       isNull(aiTask.deletedAt),
       like(aiTask.taskInfo, '%"app":"rumpelstiltskin"%')
     );

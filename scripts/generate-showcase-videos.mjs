@@ -28,7 +28,7 @@ const scenes = [
   },
 ];
 
-async function credentials() {
+export async function credentials() {
   const text = await readFile(`${root}.env.development`, 'utf8');
   const env = Object.fromEntries(
     [...text.matchAll(/^([A-Z0-9_]+)=(.*)$/gm)].map((m) => [

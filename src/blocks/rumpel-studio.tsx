@@ -14,11 +14,12 @@ import { z } from 'zod';
 import { useSession } from '@/core/auth/client';
 import { Link } from '@/core/i18n/navigation';
 import { apiGet, apiPost } from '@/lib/api-client';
+import { preparePortrait } from '@/lib/portrait-input';
 import { m } from '@/paraglide/messages.js';
 import { RumpelFooter, RumpelHeader } from '@/blocks/rumpel-home';
+import { PortraitSlot } from '@/components/portrait-slot';
 import { ShowcaseVideo, showcaseVideos } from '@/components/showcase-video';
 
-type Preset = 'castle' | 'forest' | 'ballroom' | 'custom';
 type Task = {
   id: string;
   status: string;
@@ -30,7 +31,7 @@ type Task = {
 type StudioStatus = {
   configured: boolean;
   costCredits: number;
-  costs?: { 5: number; 8: number };
+  costs?: { 5: number; 10: number };
   model: string;
 };
 const pendingStatuses = ['pending', 'processing', 'queued'];
@@ -48,8 +49,14 @@ function safeVideoUrl(value?: string | null) {
 export function RumpelStudio({ publicPage = false }: { publicPage?: boolean }) {
   const { data: session, isPending: sessionPending } = useSession();
   const queryClient = useQueryClient();
-  const [preset, setPreset] = useState<Preset>('castle');
-  const [duration, setDuration] = useState<5 | 8>(5);
+  const [duration, setDuration] = useState<5 | 10>(10);
+  const [photos, setPhotos] = useState<[string | null, string | null]>([
+    null,
+    null,
+  ]);
+  const [preparing, setPreparing] = useState(false);
+  const [photoError, setPhotoError] = useState<string | null>(null);
+  const [consent, setConsent] = useState(false);
   const [aspectRatio, setAspectRatio] = useState<'9:16' | '16:9'>('9:16');
   const [submittedTask, setSubmittedTask] = useState<Task | null>(null);
   const statusQuery = useQuery({
@@ -61,9 +68,12 @@ export function RumpelStudio({ publicPage = false }: { publicPage?: boolean }) {
     mutationFn: (prompt: string) =>
       apiPost<Task>('/api/rumpelstiltskin/generate', {
         prompt,
-        preset,
+        preset: 'custom',
         duration,
         aspectRatio,
+        photoA: photos[0],
+        photoB: photos[1],
+        consent,
       }),
     onSuccess: (task) => {
       setSubmittedTask(task);
@@ -94,6 +104,7 @@ export function RumpelStudio({ publicPage = false }: { publicPage?: boolean }) {
     Boolean(task && pendingStatuses.includes(task.status));
   const videoUrl = safeVideoUrl(task?.videoUrl);
   const failed = task?.status === 'failed' || task?.status === 'canceled';
+  const ready = Boolean(photos[0] && photos[1] && consent);
   const form = useForm({
     defaultValues: { prompt: String(m['rumpel.studio.defaultPrompt']()) },
     validators: {
@@ -106,7 +117,14 @@ export function RumpelStudio({ publicPage = false }: { publicPage?: boolean }) {
       }),
     },
     onSubmit: async ({ value }) => {
-      if (!session?.user || !statusQuery.data?.configured || active) return;
+      if (
+        !session?.user ||
+        !statusQuery.data?.configured ||
+        active ||
+        preparing ||
+        !ready
+      )
+        return;
       generateMutation.reset();
       try {
         await generateMutation.mutateAsync(value.prompt.trim());
@@ -119,15 +137,8 @@ export function RumpelStudio({ publicPage = false }: { publicPage?: boolean }) {
   useEffect(() => {
     try {
       const prompt = window.sessionStorage.getItem('rumpel-prompt');
-      const storedPreset = window.sessionStorage.getItem('rumpel-preset');
       if (prompt) form.setFieldValue('prompt', prompt.slice(0, 1800));
-      if (
-        storedPreset &&
-        ['castle', 'forest', 'ballroom', 'custom'].includes(storedPreset)
-      )
-        setPreset(storedPreset as Preset);
       window.sessionStorage.removeItem('rumpel-prompt');
-      window.sessionStorage.removeItem('rumpel-preset');
     } catch {
       /* Storage can be disabled; defaults remain usable. */
     }
@@ -148,30 +159,34 @@ export function RumpelStudio({ publicPage = false }: { publicPage?: boolean }) {
         'rumpel-prompt',
         form.getFieldValue('prompt')
       );
-      window.sessionStorage.setItem('rumpel-preset', preset);
     } catch {
       /* Sign-in works even if session storage is unavailable. */
     }
   }
 
-  const presets = [
+  async function selectPhoto(index: 0 | 1, file: File) {
+    setPreparing(true);
+    setPhotoError(null);
+    try {
+      const value = await preparePortrait(file);
+      setPhotos((current) =>
+        index === 0 ? [value, current[1]] : [current[0], value]
+      );
+    } catch {
+      setPhotoError(m['rumpel.studio.photoError']());
+    } finally {
+      setPreparing(false);
+    }
+  }
+
+  const slots = [
     {
-      value: 'castle' as const,
-      label: m['rumpel.studio.castle'](),
-      prompt: m['rumpel.studio.castlePrompt'](),
-      image: showcaseVideos.castle,
+      label: m['rumpel.studio.photoA'](),
+      hint: m['rumpel.studio.photoAHint'](),
     },
     {
-      value: 'forest' as const,
-      label: m['rumpel.studio.forest'](),
-      prompt: m['rumpel.studio.forestPrompt'](),
-      image: showcaseVideos.forest,
-    },
-    {
-      value: 'ballroom' as const,
-      label: m['rumpel.studio.ballroom'](),
-      prompt: m['rumpel.studio.ballroomPrompt'](),
-      image: showcaseVideos.ballroom,
+      label: m['rumpel.studio.photoB'](),
+      hint: m['rumpel.studio.photoBHint'](),
     },
   ];
   const controlClass =
@@ -229,39 +244,51 @@ export function RumpelStudio({ publicPage = false }: { publicPage?: boolean }) {
                 void form.handleSubmit();
               }}
             >
-              <fieldset disabled={active} className="space-y-3">
-                <legend className="mb-3 text-sm font-medium">
-                  {m['rumpel.studio.presets']()}
+              <fieldset disabled={active || preparing} className="space-y-3">
+                <legend className="mb-1 flex w-full items-center justify-between text-sm font-medium">
+                  <span>{m['rumpel.studio.casting']()}</span>
+                  <span className="text-muted-foreground text-xs font-normal">
+                    {photos.filter(Boolean).length}/2
+                  </span>
                 </legend>
-                <div className="grid grid-cols-3 gap-2">
-                  {presets.map((item) => (
-                    <button
-                      key={item.value}
-                      type="button"
-                      aria-pressed={preset === item.value}
-                      onClick={() => {
-                        setPreset(item.value);
-                        form.setFieldValue('prompt', item.prompt);
-                      }}
-                      className={`group relative overflow-hidden rounded-xl border text-left transition-all duration-200 motion-reduce:transition-none ${preset === item.value ? 'border-primary ring-primary ring-1' : 'border-border hover:border-muted-foreground'}`}
-                    >
-                      <div className="bg-secondary h-16">
-                        <ShowcaseVideo
-                          src={item.image}
-                          label={item.label}
-                          controls={false}
-                          className="h-full w-full object-cover opacity-80"
-                        />
-                      </div>
-                      <span className="block px-2 py-2.5 text-[11px] leading-4">
-                        {item.label}
-                      </span>
-                      {preset === item.value && (
-                        <Check className="bg-primary text-primary-foreground absolute top-1.5 right-1.5 size-4 rounded-full p-0.5" />
-                      )}
-                    </button>
+                <p className="text-muted-foreground mb-3 text-xs leading-5">
+                  {m['rumpel.studio.castingHint']()}
+                </p>
+                <div className="grid grid-cols-2 gap-3">
+                  {slots.map((slot, index) => (
+                    <PortraitSlot
+                      key={index}
+                      index={index + 1}
+                      label={slot.label}
+                      hint={slot.hint}
+                      value={photos[index]}
+                      disabled={active || preparing}
+                      removeLabel={m['rumpel.studio.photoRemove']()}
+                      onSelect={(file) =>
+                        void selectPhoto(index as 0 | 1, file)
+                      }
+                      onRemove={() =>
+                        setPhotos((current) =>
+                          index === 0 ? [null, current[1]] : [current[0], null]
+                        )
+                      }
+                    />
                   ))}
                 </div>
+                {preparing && (
+                  <p
+                    role="status"
+                    className="text-muted-foreground flex items-center gap-2 text-xs"
+                  >
+                    <Loader2 className="size-3 animate-spin motion-reduce:animate-none" />
+                    {m['rumpel.studio.preparing']()}
+                  </p>
+                )}
+                {photoError && (
+                  <p role="alert" className="text-destructive text-xs">
+                    {photoError}
+                  </p>
+                )}
               </fieldset>
               <form.Field name="prompt">
                 {(field) => (
@@ -277,12 +304,11 @@ export function RumpelStudio({ publicPage = false }: { publicPage?: boolean }) {
                       name={field.name}
                       value={field.state.value}
                       onBlur={field.handleBlur}
-                      onChange={(event) => {
-                        field.handleChange(event.target.value);
-                        setPreset('custom');
-                      }}
+                      onChange={(event) =>
+                        field.handleChange(event.target.value)
+                      }
                       maxLength={1800}
-                      rows={6}
+                      rows={4}
                       disabled={active}
                       placeholder={m['rumpel.studio.promptPlaceholder']()}
                       aria-invalid={field.state.meta.errors.length > 0}
@@ -296,9 +322,7 @@ export function RumpelStudio({ publicPage = false }: { publicPage?: boolean }) {
                       <span>
                         {field.state.meta.errors.length > 0
                           ? m['rumpel.studio.promptError']()
-                          : preset === 'custom'
-                            ? m['rumpel.studio.custom']()
-                            : ''}
+                          : m['rumpel.studio.promptHint']()}
                       </span>
                       <span>{field.state.value.length}/1800</span>
                     </div>
@@ -318,12 +342,12 @@ export function RumpelStudio({ publicPage = false }: { publicPage?: boolean }) {
                     value={duration}
                     disabled={active}
                     onChange={(event) =>
-                      setDuration(Number(event.target.value) as 5 | 8)
+                      setDuration(Number(event.target.value) as 5 | 10)
                     }
                     className={controlClass}
                   >
                     <option value={5}>{m['rumpel.studio.seconds5']()}</option>
-                    <option value={8}>{m['rumpel.studio.seconds8']()}</option>
+                    <option value={10}>{m['rumpel.studio.seconds10']()}</option>
                   </select>
                 </div>
                 <div className="space-y-2">
@@ -389,6 +413,16 @@ export function RumpelStudio({ publicPage = false }: { publicPage?: boolean }) {
                     : m['rumpel.studio.generationError']()}
                 </p>
               )}
+              <label className="text-muted-foreground flex items-start gap-2.5 text-xs leading-5">
+                <input
+                  type="checkbox"
+                  checked={consent}
+                  disabled={active}
+                  onChange={(event) => setConsent(event.target.checked)}
+                  className="accent-primary mt-0.5 size-4 shrink-0"
+                />
+                <span>{m['rumpel.studio.consent']()}</span>
+              </label>
               <div className="border-border space-y-3 border-t pt-5">
                 {cost != null && (
                   <div className="text-muted-foreground flex items-center justify-between gap-2 text-xs">
@@ -409,7 +443,11 @@ export function RumpelStudio({ publicPage = false }: { publicPage?: boolean }) {
                   <button
                     type="submit"
                     disabled={
-                      sessionPending || active || !statusQuery.data?.configured
+                      sessionPending ||
+                      active ||
+                      preparing ||
+                      !ready ||
+                      !statusQuery.data?.configured
                     }
                     className="bg-primary text-primary-foreground flex w-full items-center justify-center gap-2 rounded-full px-5 py-3.5 text-sm font-semibold transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-45"
                   >
@@ -420,7 +458,9 @@ export function RumpelStudio({ publicPage = false }: { publicPage?: boolean }) {
                     )}
                     {active
                       ? m['rumpel.studio.generating']()
-                      : m['rumpel.studio.generate']()}
+                      : ready
+                        ? m['rumpel.studio.generate']()
+                        : m['rumpel.studio.needPhotos']()}
                   </button>
                 )}
                 <p className="text-muted-foreground text-center text-[11px] leading-5">
@@ -455,10 +495,7 @@ export function RumpelStudio({ publicPage = false }: { publicPage?: boolean }) {
               ) : (
                 <>
                   <ShowcaseVideo
-                    src={
-                      presets.find((item) => item.value === preset)?.image ??
-                      presets[0].image
-                    }
+                    src={showcaseVideos.castle}
                     label={m['rumpel.studio.concept']()}
                     className="brand-preview-image absolute inset-0 h-full w-full object-cover"
                   />

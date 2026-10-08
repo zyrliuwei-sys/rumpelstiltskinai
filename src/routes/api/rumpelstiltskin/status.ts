@@ -12,11 +12,11 @@ async function GET() {
     const configs = await getAllConfigs();
     return respData(
       {
-        configured: Boolean(configs.fal_api_key?.trim()),
+        configured: Boolean(configs.evolink_api_key?.trim()),
         costCredits: generationCredits(configs, 5),
         costs: {
           5: generationCredits(configs, 5),
-          8: generationCredits(configs, 8),
+          10: generationCredits(configs, 10),
         },
         model: RUMPELSTILTSKIN_MODEL,
       },

@@ -86,7 +86,7 @@ export function Pricing({
     staleTime: 10 * 60_000,
   });
   const perVideo = priceData?.costCredits ?? generationCredits({}, 5);
-  const perLongVideo = priceData?.costs?.['8'] ?? generationCredits({}, 8);
+  const perLongVideo = priceData?.costs?.['10'] ?? generationCredits({}, 10);
 
   function features(credits: number, extra: PricingFeature[]) {
     return [

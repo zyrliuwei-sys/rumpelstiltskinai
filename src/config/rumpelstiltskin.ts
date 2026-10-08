@@ -1,12 +1,14 @@
 /** Fixed, server-approved generation settings. Never accept a model from clients. */
-export const RUMPELSTILTSKIN_MODEL = 'fal-ai/wan/v2.2-a14b/text-to-video';
+export const RUMPELSTILTSKIN_MODEL = 'seedance-2.0-mini-reference-to-video';
+export const RUMPELSTILTSKIN_LEGACY_MODEL =
+  'fal-ai/wan/v2.2-a14b/text-to-video';
 export const RUMPELSTILTSKIN_PRESETS = [
   'castle',
   'forest',
   'ballroom',
   'custom',
 ] as const;
-export const RUMPELSTILTSKIN_DURATIONS = [5, 8] as const;
+export const RUMPELSTILTSKIN_DURATIONS = [5, 10] as const;
 export const RUMPELSTILTSKIN_RATIOS = ['9:16', '16:9'] as const;
 export type RumpelstiltskinPreset = (typeof RUMPELSTILTSKIN_PRESETS)[number];
 export type RumpelstiltskinDuration =
@@ -22,7 +24,7 @@ export function generationCredits(
     ? value
     : duration === 5
       ? 40
-      : 60;
+      : 80;
 }
 
 export type RumpelstiltskinTaskView = {

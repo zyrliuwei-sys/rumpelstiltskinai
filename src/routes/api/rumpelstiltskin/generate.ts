@@ -1,6 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router';
 
-import { AIMediaType, FalProvider } from '@/core/ai';
+import { AIMediaType } from '@/core/ai';
+import { EvoLinkHttpError, EvoLinkProvider } from '@/core/ai/evolink';
 import { getAuth } from '@/core/auth';
 import {
   generationCredits,
@@ -15,6 +16,7 @@ import {
 } from '@/modules/ai-tasks/service';
 import { getAllConfigs } from '@/modules/config/service';
 import { getBalance } from '@/modules/credits/service';
+import { submitPerformance } from '@/modules/rumpelstiltskin/service';
 import { enforceMinIntervalRateLimit } from '@/lib/rate-limit';
 import { respData, respErr } from '@/lib/resp';
 
@@ -32,19 +34,34 @@ async function POST({ request }: { request: Request }) {
       return respErr('Forbidden', { status: 403 });
     if (!request.headers.get('content-type')?.includes('application/json'))
       return respErr('JSON body required', { status: 400 });
-    const parsed = generateInput.safeParse(
-      await request.json().catch(() => null)
-    );
+    // Bound the actual stream, not just the optional Content-Length header.
+    const reader = request.body?.getReader();
+    if (!reader) return respErr('Request body required', { status: 400 });
+    let size = 0;
+    const chunks: Uint8Array[] = [];
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      size += value.byteLength;
+      if (size > 5_650_000) {
+        await reader.cancel();
+        return respErr('Photos too large', { status: 413 });
+      }
+      chunks.push(value);
+    }
+    const text = await new Blob(chunks as BlobPart[]).text();
+    const parsed = generateInput.safeParse(JSON.parse(text));
     if (!parsed.success)
       return respErr(
-        'Enter a 10–1800 character prompt and select a supported preset, duration and ratio',
+        'Upload two valid portraits, confirm consent, and select a supported duration and ratio',
         { status: 400 }
       );
-    const { prompt, duration, aspectRatio, preset } = parsed.data;
+    const { prompt, duration, aspectRatio, preset, photoA, photoB } =
+      parsed.data;
     const configs = await getAllConfigs();
-    if (!configs.fal_api_key?.trim())
+    if (!configs.evolink_api_key?.trim())
       return respErr(
-        'Video generation is not configured yet. An administrator must add a Fal API key in Settings. No credits were charged.',
+        'An administrator must add an EvoLink API key in Settings. No credits were charged.',
         { status: 503 }
       );
     const costCredits = generationCredits(configs, duration);
@@ -62,7 +79,7 @@ async function POST({ request }: { request: Request }) {
     const task = await createTask({
       userId: session.user.id,
       mediaType: AIMediaType.VIDEO,
-      provider: 'fal',
+      provider: 'evolink',
       model: RUMPELSTILTSKIN_MODEL,
       prompt,
       costCredits,
@@ -74,25 +91,23 @@ async function POST({ request }: { request: Request }) {
         duration,
         aspectRatio,
       });
-      const provider = new FalProvider({ apiKey: configs.fal_api_key });
-      const result = await provider.generate({
-        params: {
-          mediaType: AIMediaType.VIDEO,
-          model: RUMPELSTILTSKIN_MODEL,
-          prompt,
-          options: {
-            num_frames: duration * 16 + 1,
-            frames_per_second: 16,
-            aspect_ratio: aspectRatio,
-            resolution: '720p',
-            enable_safety_checker: true,
-            enable_output_safety_checker: true,
-          },
-        },
+      const provider = new EvoLinkProvider(configs.evolink_api_key);
+      const result = await submitPerformance(provider, {
+        photoA,
+        photoB,
+        prompt,
+        duration,
+        aspectRatio,
       });
-      await setProviderTaskId(task.id, result.taskId);
+      await setProviderTaskId(task.id, result.id);
       return respData({ id: task.id, status: AITaskStatus.PENDING });
-    } catch {
+    } catch (error) {
+      // An ambiguous network failure may have created a paid provider job.
+      // Never resubmit or instantly refund such a request.
+      if (!(error instanceof EvoLinkHttpError && error.status < 500)) {
+        await mergeTaskInfo(task.id, { submissionUncertain: true });
+        return respData({ id: task.id, status: AITaskStatus.PENDING });
+      }
       await updateTask({
         taskId: task.id,
         status: AITaskStatus.FAILED,
