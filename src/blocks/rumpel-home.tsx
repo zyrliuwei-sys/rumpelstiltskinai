@@ -21,6 +21,7 @@ import {
 } from '@/blocks/rumpel-editorial';
 import { BuiltWithShipAny } from '@/components/built-with-shipany';
 import { LocaleSelector } from '@/components/locale-selector';
+import { SiteUserMenu } from '@/components/site-user-menu';
 
 const heroImage = '/imgs/generated/rumpelstiltskin-hero.webp';
 function startPreset(preset: string, prompt: string) {
@@ -34,7 +35,8 @@ function startPreset(preset: string, prompt: string) {
 
 export function RumpelHeader() {
   const [open, setOpen] = useState(false);
-  const { data: session } = useSession();
+  const { data: session, isPending: sessionPending } = useSession();
+  const user = session?.user;
   const links = [
     { href: '/create', label: m['rumpel.nav.studio']() },
     { href: '/#inspiration', label: m['rumpel.nav.templates']() },
@@ -60,19 +62,29 @@ export function RumpelHeader() {
         </nav>
         <div className="rumpel-nav-actions">
           <LocaleSelector />
-          <Link
-            href={session?.user ? '/settings/videos' : '/sign-in'}
-            className="rumpel-login"
-          >
-            {session?.user
-              ? m['rumpel.nav.library']()
-              : m['common.sign.sign_in_title']()}
-          </Link>
+          {!sessionPending && (
+            <Link
+              href={user ? '/settings/videos' : '/sign-in'}
+              className="rumpel-login"
+            >
+              {user
+                ? m['rumpel.nav.library']()
+                : m['common.sign.sign_in_title']()}
+            </Link>
+          )}
           <Link href="/create" className="rumpel-button rumpel-button-small">
             {m['rumpel.nav.create']()}
             <ArrowUpRight size={15} />
           </Link>
         </div>
+        {user && (
+          <SiteUserMenu
+            name={user.name || user.email}
+            email={user.email}
+            image={user.image}
+            triggerLabel={m['rumpel.nav.signed_in']()}
+          />
+        )}
         <button
           className="rumpel-menu"
           onClick={() => setOpen(!open)}
@@ -89,7 +101,16 @@ export function RumpelHeader() {
               {l.label}
             </Link>
           ))}
-          <Link href="/sign-in">{m['common.sign.sign_in_title']()}</Link>
+          {!sessionPending && (
+            <Link
+              href={user ? '/settings/videos' : '/sign-in'}
+              onClick={() => setOpen(false)}
+            >
+              {user
+                ? m['rumpel.nav.library']()
+                : m['common.sign.sign_in_title']()}
+            </Link>
+          )}
           <LocaleSelector />
         </nav>
       )}

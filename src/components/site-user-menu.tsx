@@ -21,10 +21,12 @@ export function SiteUserMenu({
   name,
   email,
   image,
+  triggerLabel,
 }: {
   name: string;
   email: string;
   image?: string | null;
+  triggerLabel?: string;
 }) {
   const router = useRouter();
   const { data } = useUserPermissions();
@@ -37,13 +39,21 @@ export function SiteUserMenu({
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger className="focus-visible:ring-ring rounded-full outline-none focus-visible:ring-2">
+      <DropdownMenuTrigger
+        aria-label={triggerLabel || name || email}
+        className="focus-visible:ring-ring flex shrink-0 items-center gap-2 rounded-full outline-none focus-visible:ring-2"
+      >
         <Avatar className="size-9">
           <AvatarImage src={image || undefined} alt={name} />
           <AvatarFallback className="text-xs">
             {name.charAt(0).toUpperCase()}
           </AvatarFallback>
         </Avatar>
+        {triggerLabel && (
+          <span className="text-primary hidden text-sm font-medium sm:inline">
+            {triggerLabel}
+          </span>
+        )}
       </DropdownMenuTrigger>
       <DropdownMenuContent className="min-w-56" align="end" sideOffset={8}>
         <DropdownMenuGroup>
