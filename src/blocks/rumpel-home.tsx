@@ -19,7 +19,6 @@ import {
   RumpelPromptGuide,
   RumpelUseCases,
 } from '@/blocks/rumpel-editorial';
-import { BuiltWithShipAny } from '@/components/built-with-shipany';
 import { LocaleSelector } from '@/components/locale-selector';
 import {
   ShowcasePlaybackControl,
@@ -500,7 +499,6 @@ export function RumpelFooter() {
           © {new Date().getFullYear()} {envConfigs.app_name}.{' '}
           {m['rumpel.footer.rights']()}
         </p>
-        <BuiltWithShipAny />
       </div>
     </footer>
   );
