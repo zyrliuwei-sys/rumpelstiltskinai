@@ -1,5 +1,3 @@
-'use client';
-
 import { lazy, Suspense, useMemo, useState } from 'react';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import {
@@ -14,8 +12,8 @@ import { toast } from 'sonner';
 
 import { useSession } from '@/core/auth/client';
 import { useRouter } from '@/core/i18n/navigation';
-import { duetCredits } from '@/config/hotel-lobby-pricing';
 import { pricingCatalog } from '@/config/pricing';
+import { generationCredits } from '@/config/rumpelstiltskin';
 import { apiGet, apiPost } from '@/lib/api-client';
 import { currentPathWithQuery } from '@/lib/redirect';
 import { track } from '@/lib/track';
@@ -80,15 +78,15 @@ export function Pricing({
 
   // Live per-video price so "≈ N videos" matches what generation charges.
   const { data: priceData } = useQuery({
-    queryKey: ['hotel-lobby-price'],
+    queryKey: ['rumpel-studio-status'],
     queryFn: () =>
-      apiGet<{ credits: number; lengths?: Record<string, number> }>(
-        '/api/hotel-lobby/price'
+      apiGet<{ costCredits: number; costs?: Record<string, number> }>(
+        '/api/rumpelstiltskin/status'
       ),
     staleTime: 10 * 60_000,
   });
-  const perVideo = priceData?.credits ?? duetCredits();
-  const perLongVideo = priceData?.lengths?.['15'] ?? duetCredits(15);
+  const perVideo = priceData?.costCredits ?? generationCredits({}, 5);
+  const perLongVideo = priceData?.costs?.['8'] ?? generationCredits({}, 8);
 
   function features(credits: number, extra: PricingFeature[]) {
     return [

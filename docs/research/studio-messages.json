@@ -1,0 +1,198 @@
+{
+  "rumpel.studio.title": {
+    "en": "Make a little mischief.",
+    "zh": "让童话，跳出想象。"
+  },
+  "rumpel.studio.subtitle": {
+    "en": "Turn a curious idea into a dancing fairytale.",
+    "zh": "把一个灵感，变成会跳舞的奇幻短片。"
+  },
+  "rumpel.studio.promptLabel": {
+    "en": "Your scene",
+    "zh": "描述你的场景"
+  },
+  "rumpel.studio.promptPlaceholder": {
+    "en": "Describe the dance, setting, and mood…",
+    "zh": "描述舞步、场景与氛围……"
+  },
+  "rumpel.studio.defaultPrompt": {
+    "en": "A mischievous fictional Rumpelstiltskin dances on tiptoe in a candlelit castle, handmade 1980s fantasy-film aesthetic, expressive face, cinematic lighting, playful movement.",
+    "zh": "一个淘气的虚构侏儒怪在烛光城堡里踮脚跳舞，1980 年代手工奇幻电影美学，生动表情，电影灯光，俏皮的动作。"
+  },
+  "rumpel.studio.presets": {
+    "en": "Choose a world",
+    "zh": "选择一个世界"
+  },
+  "rumpel.studio.castle": {
+    "en": "Candlelit castle",
+    "zh": "烛光城堡"
+  },
+  "rumpel.studio.forest": {
+    "en": "Moonlit forest",
+    "zh": "月光森林"
+  },
+  "rumpel.studio.ballroom": {
+    "en": "Royal ballroom",
+    "zh": "皇家舞厅"
+  },
+  "rumpel.studio.custom": {
+    "en": "Your own world",
+    "zh": "自由创作"
+  },
+  "rumpel.studio.castlePrompt": {
+    "en": "A mischievous fictional Rumpelstiltskin dances on tiptoe in a candlelit castle, handmade 1980s fantasy-film aesthetic, expressive face, cinematic lighting, playful movement.",
+    "zh": "一个淘气的虚构侏儒怪在烛光城堡里踮脚跳舞，1980 年代手工奇幻电影美学，生动表情，电影灯光，俏皮的动作。"
+  },
+  "rumpel.studio.forestPrompt": {
+    "en": "A fictional Rumpelstiltskin tiptoes and dances among mossy trees in a moonlit forest, tiny glowing fireflies, handmade vintage fantasy-film aesthetic, playful movement, cinematic lighting.",
+    "zh": "虚构的侏儒怪在月光森林的青苔树木间踮脚跳舞，萤火虫闪烁，复古手工奇幻电影美学，俏皮动作，电影灯光。"
+  },
+  "rumpel.studio.ballroomPrompt": {
+    "en": "A fictional Rumpelstiltskin performs a mischievous tiptoe dance across a royal ballroom, velvet curtains and golden chandeliers, handmade vintage fantasy-film aesthetic, cinematic lighting.",
+    "zh": "虚构的侏儒怪在皇家舞厅里俏皮地踮脚跳舞，天鹅绒帷幕与金色吊灯，复古手工奇幻电影美学，电影灯光。"
+  },
+  "rumpel.studio.duration": {
+    "en": "Duration",
+    "zh": "时长"
+  },
+  "rumpel.studio.seconds5": {
+    "en": "5 seconds",
+    "zh": "5 秒"
+  },
+  "rumpel.studio.seconds8": {
+    "en": "8 seconds",
+    "zh": "8 秒"
+  },
+  "rumpel.studio.ratio": {
+    "en": "Frame",
+    "zh": "画幅"
+  },
+  "rumpel.studio.portrait": {
+    "en": "Portrait · 9:16",
+    "zh": "竖屏 · 9:16"
+  },
+  "rumpel.studio.landscape": {
+    "en": "Landscape · 16:9",
+    "zh": "横屏 · 16:9"
+  },
+  "rumpel.studio.cost": {
+    "en": "Uses {count} credits",
+    "zh": "消耗 {count} 积分"
+  },
+  "rumpel.studio.generate": {
+    "en": "Generate video",
+    "zh": "生成视频"
+  },
+  "rumpel.studio.generating": {
+    "en": "Creating your video…",
+    "zh": "正在创作视频……"
+  },
+  "rumpel.studio.signin": {
+    "en": "Sign in to create",
+    "zh": "登录开始创作"
+  },
+  "rumpel.studio.model": {
+    "en": "Powered by {name}",
+    "zh": "由 {name} 提供支持"
+  },
+  "rumpel.studio.setupTitle": {
+    "en": "The studio is getting ready",
+    "zh": "工作室正在准备中"
+  },
+  "rumpel.studio.setupDescription": {
+    "en": "Video generation needs a configured Fal API key. An administrator can connect the provider in Settings.",
+    "zh": "视频生成需要配置 Fal API 密钥。管理员可在设置中连接服务商。"
+  },
+  "rumpel.studio.setupLink": {
+    "en": "Open admin settings",
+    "zh": "打开管理设置"
+  },
+  "rumpel.studio.loading": {
+    "en": "Connecting to the studio…",
+    "zh": "正在连接工作室……"
+  },
+  "rumpel.studio.statusError": {
+    "en": "Unable to load studio configuration.",
+    "zh": "无法读取工作室配置。"
+  },
+  "rumpel.studio.retry": {
+    "en": "Try again",
+    "zh": "重试"
+  },
+  "rumpel.studio.previewLabel": {
+    "en": "Your preview",
+    "zh": "作品预览"
+  },
+  "rumpel.studio.concept": {
+    "en": "Concept artwork · AI generated",
+    "zh": "概念图 · AI 生成"
+  },
+  "rumpel.studio.emptyTitle": {
+    "en": "Your fairytale starts here.",
+    "zh": "你的童话，从这里开始。"
+  },
+  "rumpel.studio.emptyDescription": {
+    "en": "Choose a world, describe your dance, and make it move.",
+    "zh": "选择世界，描述舞步，让想象动起来。"
+  },
+  "rumpel.studio.queued": {
+    "en": "Your video is queued.",
+    "zh": "视频正在排队。"
+  },
+  "rumpel.studio.processing": {
+    "en": "Your video is being generated.",
+    "zh": "视频正在生成。"
+  },
+  "rumpel.studio.workingDescription": {
+    "en": "You can keep this page open while the provider finishes your clip.",
+    "zh": "请保持页面打开，等待服务商完成短片。"
+  },
+  "rumpel.studio.failed": {
+    "en": "Generation failed.",
+    "zh": "生成失败。"
+  },
+  "rumpel.studio.failedDescription": {
+    "en": "The provider could not finish this clip. Please try again.",
+    "zh": "服务商未能完成短片，请重试。"
+  },
+  "rumpel.studio.completed": {
+    "en": "Your video is ready.",
+    "zh": "视频已完成。"
+  },
+  "rumpel.studio.openVideo": {
+    "en": "Open video",
+    "zh": "打开视频"
+  },
+  "rumpel.studio.history": {
+    "en": "My videos",
+    "zh": "我的视频"
+  },
+  "rumpel.studio.home": {
+    "en": "Back to home",
+    "zh": "返回首页"
+  },
+  "rumpel.studio.creditNotice": {
+    "en": "Credits are deducted when generation starts.",
+    "zh": "生成开始时扣除积分。"
+  },
+  "rumpel.studio.promptError": {
+    "en": "Describe your scene in 1–1800 characters.",
+    "zh": "请用 1–1800 个字符描述场景。"
+  },
+  "rumpel.studio.refreshError": {
+    "en": "Unable to refresh this video. Try again.",
+    "zh": "无法更新视频状态，请重试。"
+  },
+  "rumpel.studio.generationError": {
+    "en": "Unable to start generation.",
+    "zh": "无法开始生成。"
+  },
+  "rumpel.studio.titleMeta": {
+    "en": "AI video studio",
+    "zh": "AI 视频工作室"
+  },
+  "rumpel.studio.descriptionMeta": {
+    "en": "Create a fictional dancing Rumpelstiltskin video with AI.",
+    "zh": "用 AI 创作虚构侏儒怪跳舞短视频。"
+  }
+}

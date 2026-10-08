@@ -30,9 +30,8 @@ export type PricingProduct = {
 };
 
 /**
- * Hotel Lobby AI catalog. A duet video costs a fixed number of credits
- * (see ./hotel-lobby-pricing.ts — 440 at the default 8s reference video), and
- * every pack holds a whole number of videos.
+ * Rumpelstiltskin AI credit catalog. Generation costs are shown by the studio
+ * status endpoint; each package can fund different clip lengths.
  *
  * Pricing floor: no product may sell credits below $0.01 each, so every
  * video is sold at ≥ 7× its fal cost. That is why there are no discounted
@@ -42,12 +41,11 @@ export type PricingProduct = {
 export const pricingCatalog: Record<string, PricingProduct> = {
   pack_single: {
     productId: 'pack_single',
-    productName: 'Single Video',
-    planName: 'Single Video',
-    description: 'Single Video',
+    productName: 'Mini Pack',
+    planName: 'Mini Pack',
+    description: 'Mini credit pack',
     type: PaymentType.ONE_TIME,
-    // $4.90 for one 8 s video (440 credits = duetCredits(8)). Added
-    // 2026-10-04 after no paid orders the day the floor moved to $9.90.
+    // Keep credit pack prices in sync with the checkout source of truth.
     priceInCents: 490,
     currency: 'usd',
     credits: 440,
@@ -58,8 +56,6 @@ export const pricingCatalog: Record<string, PricingProduct> = {
     planName: 'Starter Pack',
     description: 'Starter Pack',
     type: PaymentType.ONE_TIME,
-    // $9.90 for two 8 s videos (≈ 7× fal cost after PayPal fees); was
-    // $5 / 440 until 2026-10-03 — compare paid starter orders per day.
     priceInCents: 990,
     currency: 'usd',
     credits: 880,

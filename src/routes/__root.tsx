@@ -29,6 +29,8 @@ import { Toaster } from '@/components/ui/sonner';
 
 import '@/styles/fonts.css';
 import '@/styles/globals.css';
+import '@/styles/rumpel.css';
+import '@/styles/brand.css';
 
 // Analytics IDs live in the DB config (1h-cached service). Fetched via a
 // server function so drizzle/db code never reaches the client bundle.

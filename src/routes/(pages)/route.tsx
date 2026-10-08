@@ -4,6 +4,7 @@ import { ArrowLeft } from 'lucide-react';
 
 import { Link } from '@/core/i18n/navigation';
 import { m } from '@/paraglide/messages.js';
+import { RumpelFooter, RumpelHeader } from '@/blocks/rumpel-home';
 import { mdxComponents } from '@/components/mdx-components';
 
 export const Route = createFileRoute('/(pages)')({
@@ -13,7 +14,8 @@ export const Route = createFileRoute('/(pages)')({
 function PagesLayout() {
   return (
     <div className="bg-background min-h-screen">
-      <div className="mx-auto max-w-3xl px-6 pt-8 md:px-8">
+      <RumpelHeader />
+      <div className="brand-document">
         <Link
           href="/"
           className="text-muted-foreground hover:text-foreground inline-flex items-center gap-2 text-sm font-medium transition-colors"
@@ -21,12 +23,13 @@ function PagesLayout() {
           <ArrowLeft className="size-4" />
           {m['common.pages.back_to_home']()}
         </Link>
+        <div className="mt-8">
+          <MDXProvider components={mdxComponents}>
+            <Outlet />
+          </MDXProvider>
+        </div>
       </div>
-      <div className="mx-auto max-w-3xl px-6 pt-6 pb-12 md:px-8 md:pt-8 md:pb-16">
-        <MDXProvider components={mdxComponents}>
-          <Outlet />
-        </MDXProvider>
-      </div>
+      <RumpelFooter />
     </div>
   );
 }

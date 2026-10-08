@@ -1,0 +1,824 @@
+/* Rumpelstiltskin AI: a candlelit film studio, not a generic AI dashboard.
+   One dark mode. Media 12px, controls 8px, selection chips 6px. */
+:root {
+  --brand-silver: oklch(0.95 0.004 255);
+  --brand-charcoal: oklch(0.16 0.007 255);
+  --brand-stage: oklch(0.205 0.009 255);
+  --brand-candle: oklch(0.81 0.095 82);
+  --brand-smoke: oklch(0.74 0.009 255);
+  --brand-moss: oklch(0.47 0.035 145);
+}
+.rumpel-site {
+  overflow-x: clip;
+}
+.rumpel-nav {
+  position: relative;
+  background: var(--background);
+  backdrop-filter: none;
+  border-color: var(--border);
+}
+.rumpel-nav-inner {
+  height: 76px;
+  max-width: 1440px;
+}
+.rumpel-brand {
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: -0.5px;
+}
+.rumpel-brand img {
+  border-radius: 6px;
+}
+.rumpel-desktop-links a,
+.rumpel-login {
+  color: var(--muted-foreground);
+}
+.rumpel-button {
+  border-radius: 8px;
+  min-height: 48px;
+  font-weight: 650;
+}
+.rumpel-button:hover {
+  background: oklch(0.86 0.085 82);
+  transform: translateY(-1px);
+}
+.rumpel-button-small {
+  min-height: 40px;
+}
+.rumpel-mobile-links {
+  background: var(--card);
+}
+.rumpel-hero {
+  margin: 24px 24px 0;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  min-height: 670px;
+  height: min(780px, 88dvh);
+  background: var(--background);
+}
+.rumpel-hero-image {
+  left: auto;
+  width: 68%;
+  object-position: 76% center;
+}
+.rumpel-hero-shade {
+  background:
+    linear-gradient(
+      90deg,
+      #111318 24%,
+      #111318ef 32%,
+      #11131822 64%,
+      transparent
+    ),
+    linear-gradient(0deg, #111318 1%, #11131870 24%, transparent 50%);
+}
+.rumpel-hero-content {
+  padding: 82px 56px 28px;
+  max-width: 1392px;
+}
+.rumpel-hero-copy {
+  max-width: 610px;
+}
+.rumpel-eyebrow {
+  color: var(--primary);
+  font-size: 10px;
+  letter-spacing: 1.7px;
+  margin-bottom: 24px;
+}
+.rumpel-hero h1 {
+  font-family: var(--font-serif-display);
+  font-size: clamp(66px, 6.9vw, 96px);
+  font-weight: 400;
+  letter-spacing: 0.2px;
+  line-height: 1.02;
+  max-width: 600px;
+  margin-bottom: 24px;
+  text-wrap: balance;
+}
+.rumpel-hero-description {
+  max-width: 345px;
+  font-size: 16px;
+  line-height: 1.8;
+  color: var(--foreground);
+}
+.rumpel-prompt-box {
+  max-width: 1100px;
+  width: 100%;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  box-shadow: none;
+  backdrop-filter: none;
+  margin-top: auto;
+  padding: 19px 24px;
+}
+.rumpel-prompt-tabs {
+  color: var(--foreground);
+}
+.rumpel-prompt-kind,
+.rumpel-prompt-box input::placeholder {
+  color: var(--muted-foreground);
+}
+.rumpel-preset-chips button {
+  border-radius: 6px;
+  border-color: var(--border);
+  color: var(--muted-foreground);
+}
+.rumpel-preset-chips button.active {
+  background: var(--accent);
+  border-color: var(--primary);
+  color: var(--primary);
+}
+.rumpel-art-caption {
+  color: var(--muted-foreground);
+  margin-top: 14px;
+}
+.rumpel-section {
+  max-width: 1344px;
+  padding: 92px 48px;
+}
+.rumpel-section h2 {
+  font-family: var(--font-serif-display);
+  font-size: clamp(38px, 4.3vw, 62px);
+  font-weight: 400;
+  letter-spacing: 0.2px;
+  line-height: 1.08;
+  max-width: 760px;
+  text-wrap: balance;
+}
+.rumpel-section h3 {
+  font-weight: 550;
+  letter-spacing: -0.4px;
+}
+.rumpel-section-heading {
+  text-align: left;
+  margin-bottom: 38px;
+}
+.rumpel-section-heading p {
+  margin: 18px 0 0;
+  max-width: 560px;
+}
+.rumpel-introduction {
+  display: grid;
+  grid-template-columns: 0.9fr 1fr;
+  gap: 100px;
+  align-items: start;
+}
+.rumpel-introduction h2 {
+  font-size: 46px;
+}
+.rumpel-intro-lead {
+  margin-top: 22px;
+  max-width: 330px;
+  color: var(--muted-foreground);
+  font-size: 17px;
+  line-height: 1.7;
+}
+.rumpel-editorial-copy p,
+.rumpel-guide p,
+.rumpel-usecases p {
+  color: var(--muted-foreground);
+  font-size: 15px;
+  line-height: 1.9;
+}
+.rumpel-editorial-copy p + p {
+  margin-top: 20px;
+}
+.rumpel-editorial-copy .rumpel-text-link {
+  margin-top: 25px;
+}
+.rumpel-examples {
+  grid-template-columns: 1.45fr 1fr;
+  gap: 26px 32px;
+}
+.rumpel-example:first-child {
+  grid-row: span 2;
+}
+.rumpel-example:first-child .rumpel-example-image {
+  height: 648px;
+}
+.rumpel-example-image {
+  height: 256px;
+  border-radius: 12px;
+}
+.rumpel-example:first-child img {
+  object-position: 81% center;
+}
+.rumpel-example-action {
+  display: none;
+}
+.rumpel-example-caption {
+  padding: 18px 0 0;
+  gap: 16px;
+}
+.rumpel-example-caption p {
+  font-size: 13px;
+}
+.rumpel-example-caption h3 {
+  font-size: 19px;
+}
+.rumpel-concept-note {
+  text-align: left;
+  margin-top: 27px;
+}
+.rumpel-features {
+  gap: 80px;
+  grid-template-columns: 0.85fr 1.15fr;
+}
+.rumpel-feature-intro {
+  max-width: 390px;
+  font-size: 15px;
+}
+.rumpel-feature-tabs p {
+  font-size: 14px;
+}
+.rumpel-feature-media {
+  height: auto;
+  border-radius: 12px;
+  overflow: hidden;
+}
+.rumpel-feature-media > img {
+  height: 440px;
+}
+.rumpel-feature-prompt {
+  position: static;
+  background: var(--card);
+  border: none;
+  border-radius: 0;
+  backdrop-filter: none;
+  padding: 24px;
+}
+.rumpel-feature-prompt p {
+  color: var(--muted-foreground);
+  font-size: 13px;
+}
+.rumpel-how {
+  padding-top: 36px;
+}
+.rumpel-how > h2 {
+  text-align: left;
+  margin-bottom: 34px;
+}
+.rumpel-steps {
+  display: flex;
+  gap: 32px;
+  border-top: 1px solid var(--border);
+}
+.rumpel-steps > div {
+  flex: 1;
+  border: none;
+  padding: 30px 0 0;
+}
+.rumpel-steps svg {
+  margin-bottom: 20px;
+}
+.rumpel-steps p {
+  max-width: 320px;
+}
+.rumpel-guide {
+  border-top: 1px solid var(--border);
+}
+.rumpel-guide-heading {
+  max-width: 720px;
+  margin-bottom: 40px;
+}
+.rumpel-guide-heading p {
+  margin-top: 20px;
+  max-width: 620px;
+}
+.rumpel-guide-layout {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 80px;
+  align-items: start;
+}
+.rumpel-guide-tips {
+  display: grid;
+  gap: 30px;
+}
+.rumpel-guide-tips article {
+  display: grid;
+  grid-template-columns: 26px 1fr;
+  gap: 18px;
+}
+.rumpel-guide-tips svg {
+  color: var(--primary);
+  margin-top: 3px;
+}
+.rumpel-guide h3 {
+  font-size: 19px;
+  margin-bottom: 10px;
+}
+.rumpel-prompt-study {
+  padding: 36px;
+  background: var(--card);
+  border-radius: 12px;
+  border: 1px solid var(--border);
+}
+.rumpel-prompt-study h3 {
+  font-size: 14px;
+  color: var(--primary);
+}
+.rumpel-prompt-study blockquote {
+  margin: 25px 0;
+  font-size: 23px;
+  line-height: 1.65;
+  letter-spacing: -0.5px;
+}
+.rumpel-prompt-study p {
+  font-size: 12px;
+}
+.rumpel-usecases {
+  padding-top: 38px;
+}
+.rumpel-usecase-layout {
+  display: grid;
+  grid-template-columns: 0.95fr 1.05fr;
+  gap: 72px;
+  margin-top: 40px;
+}
+.rumpel-usecase-layout img {
+  width: 100%;
+  height: 540px;
+  object-fit: cover;
+  border-radius: 12px;
+}
+.rumpel-usecase-layout figcaption {
+  margin-top: 14px;
+  font-size: 11px;
+  color: var(--muted-foreground);
+}
+.rumpel-usecase-layout article + article {
+  margin-top: 28px;
+}
+.rumpel-usecase-layout h3 {
+  font-size: 21px;
+  margin-bottom: 10px;
+}
+.rumpel-story {
+  grid-template-columns: 0.65fr 1fr;
+  gap: 64px;
+  padding-top: 40px;
+}
+.rumpel-story-image {
+  height: 390px;
+  border-radius: 12px;
+}
+.rumpel-story h2 {
+  font-size: 46px;
+}
+.rumpel-story p:not(.rumpel-eyebrow) {
+  font-size: 15px;
+}
+.rumpel-faq {
+  max-width: 1344px;
+  display: grid;
+  grid-template-columns: 0.65fr 1fr;
+  gap: 64px;
+  align-items: start;
+}
+.rumpel-faq h2 {
+  text-align: left;
+  font-size: 48px;
+  margin: 0;
+}
+.rumpel-faq details:first-child {
+  padding-top: 0;
+}
+.rumpel-faq summary {
+  font-size: 16px;
+  line-height: 1.6;
+}
+.rumpel-faq details p {
+  color: var(--muted-foreground);
+  font-size: 14px;
+  line-height: 1.85;
+  max-width: 65ch;
+}
+.rumpel-final {
+  text-align: left;
+  background: var(--card);
+  margin: 40px auto 90px;
+  border-radius: 12px;
+  width: calc(100% - 96px);
+  max-width: 1248px;
+  padding: 50px;
+}
+.rumpel-final > svg {
+  display: none;
+}
+.rumpel-final h2 {
+  margin: 0;
+}
+.rumpel-final p {
+  margin: 20px 0 28px;
+}
+.rumpel-footer {
+  padding-top: 55px;
+  border-top: 1px solid var(--border);
+}
+.rumpel-footer-main {
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+}
+.rumpel-footer-main > div > a:not(.rumpel-brand) {
+  font-size: 13px;
+}
+.rumpel-nav + main:not(:has(.rumpel-hero)) {
+  padding-top: 0;
+}
+
+/* Shared inner-page language. Existing auth, payment and generation logic stays intact. */
+.brand-studio {
+  background: var(--background);
+}
+.brand-studio-main {
+  max-width: 1344px;
+  padding: 55px 48px 88px;
+  margin: auto;
+}
+.brand-page-heading {
+  margin-bottom: 36px;
+}
+.brand-page-heading h1,
+.brand-library h1,
+.brand-document h1 {
+  font-family: var(--font-serif-display);
+  font-weight: 400;
+  font-size: clamp(38px, 4vw, 60px);
+  letter-spacing: 0.3px;
+  line-height: 1.1;
+}
+.brand-page-heading p {
+  margin-top: 18px;
+  max-width: 620px;
+  line-height: 1.8;
+}
+.brand-studio-grid {
+  display: grid;
+  grid-template-columns: minmax(320px, 430px) minmax(0, 1fr);
+  align-items: start;
+  gap: 30px;
+}
+.brand-studio-controls {
+  border-radius: 12px;
+  background: var(--card);
+  padding: 28px;
+}
+.brand-studio-preview {
+  border-radius: 12px;
+  background: var(--card);
+}
+.brand-studio textarea,
+.brand-studio select {
+  border-radius: 8px;
+  background: var(--background);
+}
+.brand-studio button,
+.brand-studio a.bg-primary {
+  border-radius: 8px;
+}
+.brand-studio fieldset button {
+  border-radius: 8px;
+}
+.brand-studio-preview .brand-preview-image {
+  opacity: 1;
+  object-position: 76% center;
+}
+.brand-studio-preview .brand-preview-stage {
+  min-height: 600px;
+}
+.brand-studio-preview .brand-preview-copy {
+  position: static;
+  padding: 26px;
+}
+.brand-studio-preview .brand-preview-copy h2 {
+  font-family: var(--font-serif-display);
+  font-size: 36px;
+  font-weight: 400;
+}
+.brand-studio-preview .brand-preview-copy p {
+  color: var(--muted-foreground);
+}
+.brand-library {
+  padding: 32px;
+}
+.brand-library > div:first-child p {
+  margin-top: 14px;
+  line-height: 1.8;
+}
+.brand-library [data-slot='card'] {
+  border-radius: 12px;
+}
+.brand-pricing {
+  background: var(--background);
+}
+.brand-pricing main > section h2,
+.brand-pricing [data-slot='card-title'] {
+  font-family: var(--font-serif-display);
+  font-weight: 400;
+}
+.brand-pricing main > section h2 {
+  font-size: 60px;
+  letter-spacing: 0.3px;
+}
+.brand-pricing [data-slot='card'] {
+  border-radius: 12px;
+}
+.brand-document {
+  max-width: 900px;
+  padding: 64px 32px 96px;
+  margin: auto;
+}
+.brand-document h2 {
+  font-size: 23px;
+  margin-top: 36px;
+}
+.brand-document article > header {
+  margin-bottom: 32px;
+  padding-bottom: 28px;
+}
+.brand-auth {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background: var(--background);
+  align-items: flex-end;
+  padding: 70px max(48px, calc((100vw - 1248px) / 2));
+}
+.brand-auth::before {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  inset: 24px 44% 24px 24px;
+  border-radius: 12px;
+  background: url('/imgs/generated/rumpelstiltskin-ballroom.webp') 60% center /
+    cover;
+}
+.brand-auth > div {
+  width: 38%;
+  max-width: 420px;
+}
+.brand-auth > div > a {
+  font-family: var(--font-sans);
+  font-style: normal;
+  align-self: flex-start;
+  font-size: 20px;
+}
+.brand-auth [data-slot='card'] {
+  box-shadow: none;
+  border-radius: 12px;
+}
+.brand-auth [data-slot='card-header'] {
+  text-align: left;
+}
+.brand-auth [data-slot='card-title'] {
+  font-family: var(--font-serif-display);
+  font-size: 38px;
+  font-weight: 400;
+}
+
+@media (max-width: 1100px) {
+  .rumpel-hero h1 {
+    font-size: 78px;
+    max-width: 480px;
+  }
+  .rumpel-hero-content {
+    padding: 65px 36px 26px;
+  }
+  .rumpel-introduction,
+  .rumpel-guide-layout,
+  .rumpel-usecase-layout,
+  .rumpel-features {
+    gap: 40px;
+  }
+  .rumpel-story,
+  .rumpel-faq {
+    gap: 40px;
+  }
+  .rumpel-example:first-child .rumpel-example-image {
+    height: 602px;
+  }
+  .brand-studio-main {
+    padding: 40px 32px 70px;
+  }
+  .brand-studio-grid {
+    grid-template-columns: minmax(300px, 380px) minmax(0, 1fr);
+    gap: 20px;
+  }
+  .brand-studio-controls {
+    padding: 22px;
+  }
+}
+@media (max-width: 767px) {
+  .rumpel-nav-inner {
+    height: 68px;
+  }
+  .rumpel-brand {
+    font-size: 16px;
+  }
+  .rumpel-hero {
+    margin: 12px;
+    min-height: 0;
+    height: auto;
+  }
+  .rumpel-hero-image {
+    top: 0;
+    width: 100%;
+    height: 330px;
+    object-position: 76% center;
+  }
+  .rumpel-hero-shade {
+    background: linear-gradient(
+      0deg,
+      #111318 32%,
+      #111318de 49%,
+      #11131810 72%
+    );
+  }
+  .rumpel-hero-content {
+    padding: 272px 20px 22px;
+    min-height: 0;
+  }
+  .rumpel-hero h1 {
+    font-size: clamp(43px, 12.8vw, 72px);
+    letter-spacing: 0;
+    max-width: 100%;
+  }
+  .rumpel-hero-copy {
+    margin-bottom: 30px;
+  }
+  .rumpel-eyebrow {
+    font-size: 9px;
+    letter-spacing: 1px;
+    margin-bottom: 18px;
+  }
+  .rumpel-hero-description {
+    font-size: 14px;
+    max-width: 320px;
+  }
+  .rumpel-prompt-box {
+    padding: 16px;
+    border-radius: 12px;
+  }
+  .rumpel-prompt-box input {
+    font-size: 13px;
+  }
+  .rumpel-preset-chips {
+    flex-wrap: wrap;
+  }
+  .rumpel-preset-chips button {
+    font-size: 10px;
+    padding: 7px 8px;
+  }
+  .rumpel-prompt-bottom {
+    gap: 16px;
+  }
+  .rumpel-art-caption {
+    font-size: 10px;
+    line-height: 1.7;
+  }
+  .rumpel-section {
+    padding: 58px 24px;
+  }
+  .rumpel-section h2 {
+    font-size: 38px;
+    letter-spacing: 0.1px;
+  }
+  .rumpel-introduction,
+  .rumpel-guide-layout,
+  .rumpel-usecase-layout,
+  .rumpel-story,
+  .rumpel-faq,
+  .rumpel-features {
+    grid-template-columns: 1fr;
+    gap: 30px;
+  }
+  .rumpel-intro-lead {
+    max-width: 100%;
+    font-size: 15px;
+  }
+  .rumpel-editorial-copy p,
+  .rumpel-guide p,
+  .rumpel-usecases p {
+    font-size: 14px;
+    line-height: 1.9;
+  }
+  .rumpel-examples {
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
+  .rumpel-example:first-child {
+    grid-row: auto;
+  }
+  .rumpel-example-image,
+  .rumpel-example:first-child .rumpel-example-image {
+    height: 330px;
+  }
+  .rumpel-example-caption > span {
+    display: inline-flex;
+  }
+  .rumpel-example-caption p {
+    font-size: 12px;
+  }
+  .rumpel-feature-media > img {
+    height: 330px;
+  }
+  .rumpel-feature-prompt {
+    padding: 20px;
+  }
+  .rumpel-how > h2 {
+    margin-bottom: 20px;
+  }
+  .rumpel-steps {
+    flex-direction: column;
+    gap: 6px;
+  }
+  .rumpel-steps > div {
+    display: grid;
+    grid-template-columns: 28px 1fr;
+    gap: 0 16px;
+  }
+  .rumpel-steps svg {
+    grid-row: span 2;
+  }
+  .rumpel-steps p {
+    grid-column: 2;
+    max-width: 100%;
+  }
+  .rumpel-prompt-study {
+    padding: 24px;
+  }
+  .rumpel-prompt-study blockquote {
+    font-size: 20px;
+  }
+  .rumpel-usecase-layout {
+    margin-top: 26px;
+  }
+  .rumpel-usecase-layout img {
+    height: 350px;
+  }
+  .rumpel-story-image {
+    height: 290px;
+  }
+  .rumpel-faq summary {
+    font-size: 15px;
+  }
+  .rumpel-final {
+    margin: 10px 24px 58px;
+    width: calc(100% - 48px);
+    padding: 28px;
+  }
+  .rumpel-final h2 {
+    font-size: 36px;
+  }
+  .rumpel-footer-main {
+    grid-template-columns: 1fr 1fr;
+  }
+  .rumpel-footer-main > div:first-child {
+    grid-column: 1 / -1;
+  }
+  .brand-studio-main {
+    padding: 34px 22px 58px;
+  }
+  .brand-studio-grid {
+    grid-template-columns: 1fr;
+    gap: 26px;
+  }
+  .brand-studio-controls {
+    padding: 20px;
+  }
+  .brand-studio-preview .brand-preview-stage {
+    min-height: 420px;
+  }
+  .brand-page-heading h1 {
+    font-size: 40px;
+  }
+  .brand-document {
+    padding: 40px 24px 64px;
+  }
+  .brand-library {
+    padding: 22px;
+  }
+  .brand-pricing main > section h2 {
+    font-size: 44px;
+  }
+  .brand-auth {
+    align-items: center;
+    padding: 32px 22px;
+  }
+  .brand-auth::before {
+    display: none;
+  }
+  .brand-auth > div {
+    width: 100%;
+    max-width: 420px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .rumpel-site *,
+  .brand-studio * {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+}

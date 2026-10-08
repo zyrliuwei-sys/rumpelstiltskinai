@@ -9,6 +9,7 @@ import {
   LifeBuoy,
   Receipt,
   User,
+  WandSparkles,
 } from 'lucide-react';
 
 import { envConfigs } from '@/config';
@@ -24,6 +25,12 @@ export const Route = createFileRoute('/settings')({
 function SettingsLayout() {
   const group = m['common.systems.settings']();
   const navItems = [
+    {
+      href: '/create',
+      label: m['settings.nav.studio'](),
+      icon: WandSparkles,
+      group,
+    },
     {
       href: '/settings',
       label: m['settings.nav.overview'](),

@@ -13,8 +13,9 @@ import { Card, CardContent } from '@/components/ui/card';
 type VideoRow = {
   id: string;
   status: 'pending' | 'processing' | 'success' | 'failed';
-  sceneImageUrl: string | null;
+  prompt: string;
   videoUrl: string | null;
+  error: string | null;
   createdAt: string;
 };
 
@@ -30,11 +31,27 @@ function VideosPage() {
   const [page, setPage] = useState(1);
 
   const query = useQuery({
-    queryKey: ['hotel-lobby-videos', page],
-    queryFn: () =>
-      apiGet<PageResult<VideoRow>>(
-        `/api/hotel-lobby/videos?page=${page}&pageSize=${PAGE_SIZE}`
-      ),
+    queryKey: ['rumpelstiltskin-videos', page],
+    queryFn: async () => {
+      const result = await apiGet<PageResult<VideoRow>>(
+        `/api/rumpelstiltskin/videos?page=${page}&pageSize=${PAGE_SIZE}`
+      );
+      const updates = await Promise.allSettled(
+        result.items.map(async (video) =>
+          video.status === 'pending' || video.status === 'processing'
+            ? apiGet<VideoRow>(
+                `/api/rumpelstiltskin/task?id=${encodeURIComponent(video.id)}`
+              )
+            : video
+        )
+      );
+      return {
+        ...result,
+        items: updates.map((update, index) =>
+          update.status === 'fulfilled' ? update.value : result.items[index]
+        ),
+      };
+    },
     placeholderData: keepPreviousData,
     // Unfinished videos keep moving server-side; refresh until they land.
     refetchInterval: (q) =>
@@ -49,7 +66,7 @@ function VideosPage() {
   const pages = Math.max(1, Math.ceil(total / PAGE_SIZE));
 
   return (
-    <div className="space-y-6 p-6">
+    <div className="brand-library space-y-6">
       <div>
         <h1 className="text-2xl font-bold">{m['settings.videos.title']()}</h1>
         <p className="text-muted-foreground">
@@ -59,13 +76,17 @@ function VideosPage() {
 
       {query.isPending ? (
         <Loader2 className="text-muted-foreground size-5 animate-spin" />
+      ) : query.isError ? (
+        <p role="alert" className="text-destructive">
+          {query.error.message}
+        </p>
       ) : rows.length === 0 ? (
         <Card className="max-w-md">
           <CardContent className="flex flex-col items-start gap-4">
             <p className="text-muted-foreground">
               {m['settings.videos.empty']()}
             </p>
-            <Link href="/#create" className={cn(buttonVariants(), 'gap-2')}>
+            <Link href="/create" className={cn(buttonVariants(), 'gap-2')}>
               <Film className="size-4" />
               {m['settings.videos.create']()}
             </Link>
@@ -79,27 +100,39 @@ function VideosPage() {
                 {v.status === 'success' && v.videoUrl ? (
                   <video
                     src={v.videoUrl}
-                    poster={v.sceneImageUrl ?? undefined}
+                    poster="/imgs/generated/rumpelstiltskin-hero.webp"
                     controls
                     playsInline
                     preload="metadata"
                     className="size-full bg-black object-contain"
                   />
-                ) : v.sceneImageUrl ? (
+                ) : (
                   <img
-                    src={v.sceneImageUrl}
+                    src="/imgs/generated/rumpelstiltskin-hero.webp"
                     alt=""
                     className="size-full object-cover opacity-60"
                   />
-                ) : null}
+                )}
               </div>
+              <p className="line-clamp-2 px-6 text-sm" title={v.prompt}>
+                {v.prompt}
+              </p>
+              {v.status === 'failed' && v.error && (
+                <p role="alert" className="text-destructive px-6 text-sm">
+                  {v.error}
+                </p>
+              )}
               <CardContent className="flex items-center justify-between gap-2 pb-4">
                 <span className="text-muted-foreground text-sm">
                   {new Date(v.createdAt).toLocaleString()}
                 </span>
                 {v.status === 'success' && v.videoUrl ? (
                   <a
-                    href={`/api/hotel-lobby/download?id=${v.id}`}
+                    href={
+                      /^https?:\/\//i.test(v.videoUrl) ? v.videoUrl : undefined
+                    }
+                    target="_blank"
+                    rel="noopener noreferrer"
                     download
                     className={cn(
                       buttonVariants({ variant: 'outline', size: 'sm' }),

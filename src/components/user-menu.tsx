@@ -13,7 +13,7 @@ import { useTheme } from 'next-themes';
 
 import { signOut } from '@/core/auth/client';
 import { useRouter } from '@/core/i18n/navigation';
-import { localeNames } from '@/config/locale';
+import { localeNames, showLanguageSwitcher } from '@/config/locale';
 import { m } from '@/paraglide/messages.js';
 import {
   getLocale,
@@ -127,23 +127,27 @@ export function UserMenu({
                 {m['common.nav.profile']()}
               </DropdownMenuItem>
             )}
-            <DropdownMenuSub>
-              <DropdownMenuSubTrigger className="gap-2 px-2 py-2">
-                <LanguagesIcon className="size-4" />
-                <span className="flex-1">{localeNames[locale] || locale}</span>
-              </DropdownMenuSubTrigger>
-              <DropdownMenuSubContent>
-                {locales.map((loc) => (
-                  <DropdownMenuItem
-                    key={loc}
-                    onClick={() => handleLocaleSwitch(loc)}
-                  >
-                    <span className="flex-1">{localeNames[loc] || loc}</span>
-                    {loc === locale && <CheckIcon className="size-3.5" />}
-                  </DropdownMenuItem>
-                ))}
-              </DropdownMenuSubContent>
-            </DropdownMenuSub>
+            {showLanguageSwitcher && (
+              <DropdownMenuSub>
+                <DropdownMenuSubTrigger className="gap-2 px-2 py-2">
+                  <LanguagesIcon className="size-4" />
+                  <span className="flex-1">
+                    {localeNames[locale] || locale}
+                  </span>
+                </DropdownMenuSubTrigger>
+                <DropdownMenuSubContent>
+                  {locales.map((loc) => (
+                    <DropdownMenuItem
+                      key={loc}
+                      onClick={() => handleLocaleSwitch(loc)}
+                    >
+                      <span className="flex-1">{localeNames[loc] || loc}</span>
+                      {loc === locale && <CheckIcon className="size-3.5" />}
+                    </DropdownMenuItem>
+                  ))}
+                </DropdownMenuSubContent>
+              </DropdownMenuSub>
+            )}
             <DropdownMenuSub>
               <DropdownMenuSubTrigger className="gap-2 px-2 py-2">
                 <PaletteIcon className="size-4" />
