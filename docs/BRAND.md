@@ -21,7 +21,7 @@ Both `:root` and `.dark` share the committed dark palette. Semantic tokens cover
 
 Bebas Neue is the film-title display face; DM Sans handles navigation, body, forms and data. Both are self-hosted from existing Fontsource packages. Chinese uses locally available PingFang SC and sans fallbacks. No new font dependency is required.
 
-Media and panels have 12px corners, inputs and buttons 8px, small selection chips 6px. The R monogram is candle gold on charcoal. The signature is a framed cinematic hero with a working prompt composer, carried into the studio's frame-and-control layout. Original concept art is clearly distinguished from generated video output. No fake performance figures, testimonials, songs or movie affiliations.
+Media and panels have 12px corners, inputs and buttons 8px, small selection chips 6px. The logo pairs a pointed fairytale hat with an upturned dancing shoe. A negative-space play triangle inside the hat connects the character theme to video creation. The mark uses only two filled silhouettes in candle gold, with no face details or text. `public/logo.svg` has a transparent background for the navigation/footer; `public/favicon.svg` puts the same mark on a charcoal tile. Both share a 64-unit viewBox and remain legible at 32px. The signature is a framed cinematic hero with a working prompt composer, carried into the studio's frame-and-control layout. Original concept art is clearly distinguished from generated video output. No fake performance figures, testimonials, songs or movie affiliations.
 
 ## Application
 
