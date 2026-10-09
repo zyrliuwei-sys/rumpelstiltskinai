@@ -42,6 +42,7 @@ export const generateInput = z
     ]),
     aspectRatio: z.enum(RUMPELSTILTSKIN_RATIOS),
     quality: z.enum(RUMPELSTILTSKIN_QUALITIES).default('480p'),
+    requestId: z.uuid().optional(),
     expectedCredits: z.number().int().positive().max(100000).optional(),
     photoA: portraitData,
     photoB: portraitData,

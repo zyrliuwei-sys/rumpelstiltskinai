@@ -28,6 +28,7 @@ export enum AITaskStatus {
  * Create an AI task with optional credit consumption.
  */
 export async function createTask(params: {
+  id?: string;
   userId: string;
   mediaType: string;
   provider: string;
@@ -42,7 +43,7 @@ export async function createTask(params: {
   return db().transaction(async (tx: any) => {
     // 1. Insert task
     const taskData: any = {
-      id: getUuid(),
+      id: params.id ?? getUuid(),
       userId,
       mediaType,
       provider,

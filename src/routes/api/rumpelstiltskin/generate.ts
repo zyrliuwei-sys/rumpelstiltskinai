@@ -10,6 +10,7 @@ import {
 import {
   AITaskStatus,
   createTask,
+  findTask,
   mergeTaskInfo,
   setProviderTaskId,
   updateTask,
@@ -61,6 +62,21 @@ async function POST({ request }: { request: Request }) {
       );
     const { prompt, duration, aspectRatio, preset, photoA, photoB, quality } =
       parsed.data;
+    // One intended generation keeps the same request ID across login, payment,
+    // page refresh and transport retries. The task PK also guards concurrent
+    // submissions, before any credits or provider video requests are made.
+    if (parsed.data.requestId) {
+      const previous = await findTask(parsed.data.requestId);
+      if (previous) {
+        if (
+          previous.userId !== session.user.id ||
+          previous.provider !== 'evolink' ||
+          previous.model !== RUMPELSTILTSKIN_MODEL
+        )
+          return respErr('Invalid generation request', { status: 409 });
+        return respData({ id: previous.id, status: previous.status });
+      }
+    }
     const configs = await getAllConfigs();
     if (!configs.evolink_api_key?.trim())
       return respErr(
@@ -98,6 +114,7 @@ async function POST({ request }: { request: Request }) {
       );
     }
     const task = await createTask({
+      id: parsed.data.requestId,
       userId: session.user.id,
       mediaType: AIMediaType.VIDEO,
       provider: 'evolink',

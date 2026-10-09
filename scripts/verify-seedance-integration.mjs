@@ -149,10 +149,22 @@ try {
   assert.equal(changedQuote.status, 409);
   assert.equal(await balance(), 2000);
   assert.equal(submitted, 0);
-  const created = await generate(1, { expectedCredits: 350 });
+  const requestId = '6e50ab48-d3d8-4c97-a799-463ac49ae9c3';
+  const created = await generate(1, { expectedCredits: 350, requestId });
   assert.equal(created.status, 200, await created.clone().text());
   const { data: task } = await created.json();
   assert.equal(await balance(), 1650);
+  const repeated = await Promise.all([
+    generate(9, { requestId }),
+    generate(10, { requestId }),
+  ]);
+  for (const result of repeated)
+    assert.equal((await result.json()).data.id, task.id);
+  assert.equal(await balance(), 1650);
+  assert.equal(submitted, 1);
+  console.log(
+    'PASS: reload/repeated/concurrent request IDs reuse one task and one debit'
+  );
   assert.equal(body.model, 'seedance-2.0-mini-reference-to-video');
   assert.equal(body.quality, '720p');
   assert.equal(body.image_urls.length, 2);

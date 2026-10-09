@@ -5,7 +5,8 @@ export class ApiError extends Error {
   constructor(
     public code: number,
     message: string,
-    public data?: unknown
+    public data?: unknown,
+    public status?: number
   ) {
     super(message);
     this.name = 'ApiError';
@@ -38,7 +39,8 @@ async function request<T>(url: string, init?: RequestInit): Promise<T> {
     throw new ApiError(
       json.code ?? -1,
       json.message || 'Request failed',
-      json.data
+      json.data,
+      res.status
     );
   }
   // respOk() omits data entirely — callers expecting void get undefined.

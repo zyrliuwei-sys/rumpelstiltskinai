@@ -1,4 +1,4 @@
-import { lazy, Suspense, useMemo, useState } from 'react';
+import { lazy, Suspense, useMemo, useRef, useState } from 'react';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import {
   CalendarClock,
@@ -53,12 +53,20 @@ const ALL_PROVIDERS: PaymentProvider[] = [
 export function Pricing({
   title,
   variant = 'section',
+  redirect,
+  cancelRedirect,
+  beforeCheckout,
 }: {
   title?: string;
+  redirect?: string;
+  cancelRedirect?: string;
+  beforeCheckout?: () => Promise<void>;
   /** `dialog` drops the page-section chrome for use inside a modal. */
   variant?: 'section' | 'dialog';
 } = {}) {
   const router = useRouter();
+  const checkoutLock = useRef(false);
+  const [preparingCheckout, setPreparingCheckout] = useState(false);
   const { data: session } = useSession();
 
   const { data: configsData, refetch: refetchConfigs } = usePublicConfig();
@@ -252,8 +260,13 @@ export function Pricing({
         credits_valid_days: plan.creditsValidDays,
         payment_provider: provider,
         // Come back to the page the user paid from.
-        redirect: currentPathWithQuery('/settings/billing'),
+        redirect: redirect ?? currentPathWithQuery('/settings/billing'),
+        cancel_redirect: cancelRedirect,
       }),
+    onSettled: () => {
+      checkoutLock.current = false;
+      setPreparingCheckout(false);
+    },
     onSuccess: (data) => {
       if (!data?.checkout_url) {
         toast.error('Checkout failed');
@@ -268,7 +281,18 @@ export function Pricing({
     },
   });
 
-  function startCheckout(plan: PricingPlan, provider?: PaymentProvider) {
+  async function startCheckout(plan: PricingPlan, provider?: PaymentProvider) {
+    if (checkoutLock.current) return;
+    checkoutLock.current = true;
+    setPreparingCheckout(true);
+    try {
+      await beforeCheckout?.();
+    } catch {
+      checkoutLock.current = false;
+      setPreparingCheckout(false);
+      toast.error(m['rumpel.studio.draftError']());
+      return;
+    }
     track('begin_checkout', {
       plan: plan.productId ?? '',
       value: (plan.priceInCents ?? 0) / 100,
@@ -353,7 +377,7 @@ export function Pricing({
           groups={groups}
           defaultGroup="one-time"
           onCheckout={handleCheckout}
-          checkoutPending={checkoutMutation.isPending}
+          checkoutPending={preparingCheckout || checkoutMutation.isPending}
           processingLabel={m['common.pricing.processing']()}
           buttonLabel={m['common.pricing.get_started']()}
         />

@@ -1245,5 +1245,19 @@
   "rumpel.studio.quality720": "720p · HD",
   "landing.pricing.hd_price": "720p: {credits} credits for 5s. See your exact cost before generating.",
   "landing.pricing.credit_value": "100 credits = $1. One-time credits never expire. Failed generations are refunded.",
-  "landing.pricing.feature_monthly_expiry": "Monthly credits expire at the end of each billing period"
+  "landing.pricing.feature_monthly_expiry": "Monthly credits expire at the end of each billing period",
+  "rumpel.studio.draftError": "We could not save your photos on this device. Please allow browser storage and try again.",
+  "rumpel.studio.draftMissing": "This saved draft has expired or is unavailable on this device. Please select your photos again.",
+  "rumpel.studio.draftOwner": "This draft belongs to another account. Sign in with the account used for checkout to restore it.",
+  "rumpel.studio.draftRestored": "Your photos and settings have been restored.",
+  "rumpel.studio.priceChanged": "The generation price has changed. Review the current cost, then click Generate to continue.",
+  "rumpel.studio.balanceError": "Unable to check your credits. Please try again.",
+  "rumpel.studio.paymentPending": "Your payment is still being confirmed. Your photos are saved. Check again shortly; you do not need to purchase again.",
+  "rumpel.studio.paymentCanceled": "Checkout was canceled. Your photos and settings are still here.",
+  "rumpel.studio.balance": "Available: {count} credits",
+  "rumpel.studio.confirmingPayment": "Confirming payment…",
+  "rumpel.studio.retryPayment": "Check payment and continue",
+  "rumpel.studio.paywallTitle": "Add credits to create your video",
+  "rumpel.studio.paywallDescription": "This video costs {cost} credits. You have {balance}. Choose a package to continue.",
+  "rumpel.studio.paywallSaved": "Your photos and settings are saved on this device. After payment, we will return here and continue this generation."
 }

@@ -1245,5 +1245,19 @@
   "rumpel.studio.quality720": "720p · 高清",
   "landing.pricing.hd_price": "720p：5 秒 {credits} 积分。生成前可查看本次准确扣费。",
   "landing.pricing.credit_value": "100 积分 = 1 美元。一次性积分永久有效，生成失败自动退还。",
-  "landing.pricing.feature_monthly_expiry": "每月积分在当前账期结束时到期"
+  "landing.pricing.feature_monthly_expiry": "每月积分在当前账期结束时到期",
+  "rumpel.studio.draftError": "无法在当前设备保存照片。请允许浏览器存储后重试。",
+  "rumpel.studio.draftMissing": "草稿已过期或不在当前设备，请重新选择照片。",
+  "rumpel.studio.draftOwner": "此草稿属于另一个账号。请使用付款时的账号登录后恢复。",
+  "rumpel.studio.draftRestored": "照片与生成参数已恢复。",
+  "rumpel.studio.priceChanged": "生成价格已变化，请查看当前积分费用，再点击生成继续。",
+  "rumpel.studio.balanceError": "暂时无法查询积分，请重试。",
+  "rumpel.studio.paymentPending": "付款仍在确认中，照片已保存。请稍后再次检查，无需重复购买。",
+  "rumpel.studio.paymentCanceled": "已取消付款，照片与参数已保留。",
+  "rumpel.studio.balance": "当前余额：{count} 积分",
+  "rumpel.studio.confirmingPayment": "正在确认付款…",
+  "rumpel.studio.retryPayment": "检查付款并继续生成",
+  "rumpel.studio.paywallTitle": "补充积分，继续生成视频",
+  "rumpel.studio.paywallDescription": "本次视频需要 {cost} 积分，当前余额 {balance}。请选择套餐继续。",
+  "rumpel.studio.paywallSaved": "照片与参数已保存在当前设备。付款后将自动返回并继续本次生成。"
 }
