@@ -522,12 +522,12 @@ export function RumpelHome() {
         <RumpelHero />
         <RumpelIntroduction />
         <RumpelInspiration />
-        <Pricing />
         <RumpelFeatures />
         <RumpelHow />
         <RumpelPromptGuide />
         <RumpelUseCases />
         <RumpelStory />
+        <Pricing />
         <RumpelFAQ />
         <RumpelCTA />
       </main>

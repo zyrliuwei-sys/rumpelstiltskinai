@@ -345,7 +345,7 @@ export function Pricing({
       }
     >
       <div className="mx-auto max-w-5xl">
-        <div className={dialog ? 'mb-8 pr-8 text-center' : 'mb-20 text-center'}>
+        <div className={dialog ? 'mb-8 px-8 text-center' : 'mb-20 text-center'}>
           <h2
             className={
               dialog
