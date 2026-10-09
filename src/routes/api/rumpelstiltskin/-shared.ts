@@ -6,6 +6,7 @@ import {
   RUMPELSTILTSKIN_LEGACY_MODEL,
   RUMPELSTILTSKIN_MODEL,
   RUMPELSTILTSKIN_PRESETS,
+  RUMPELSTILTSKIN_QUALITIES,
   RUMPELSTILTSKIN_RATIOS,
   type RumpelstiltskinTaskView,
 } from '@/config/rumpelstiltskin';
@@ -40,6 +41,8 @@ export const generateInput = z
       z.literal(RUMPELSTILTSKIN_DURATIONS[1]),
     ]),
     aspectRatio: z.enum(RUMPELSTILTSKIN_RATIOS),
+    quality: z.enum(RUMPELSTILTSKIN_QUALITIES).default('480p'),
+    expectedCredits: z.number().int().positive().max(100000).optional(),
     photoA: portraitData,
     photoB: portraitData,
     consent: z.literal(true),

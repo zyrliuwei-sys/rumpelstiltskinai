@@ -963,7 +963,7 @@
   "landing.pricing.feature_yearly_upfront": "全年积分一次到账",
   "landing.pricing.feature_monthly_refill": "每月自动发放积分",
   "landing.pricing.feature_no_subscription": "无需订阅",
-  "landing.pricing.feature_hd": "720p 竖屏或横屏视频",
+  "landing.pricing.feature_hd": "480p 或 720p · 竖屏或横屏",
   "landing.pricing.feature_credits": "{credits} 积分",
   "landing.pricing.studio_desc": "适合创作者和小团队",
   "landing.pricing.studio": "工作室版",
@@ -1223,7 +1223,7 @@
   "hotel.create.length_seconds": "{seconds} 秒",
   "hotel.create.length_credits": "积分",
   "landing.pricing.feature_videos_lengths": "约 {short} 个 5 秒或 {long} 个 10 秒视频",
-  "landing.pricing.per_video_lengths": "5 秒：{short} 积分。10 秒：{long} 积分。",
+  "landing.pricing.per_video_lengths": "480p：5 秒 {short} 积分 · 10 秒 {long} 积分",
   "landing.pricing.feature_videos_short_only": "约 {short} 个 5 秒视频（10 秒需 {credits} 积分）",
   "landing.pricing.pack_single": "迷你积分包",
   "landing.pricing.pack_single_desc": "开始你的下一段童话",
@@ -1239,5 +1239,11 @@
   "rumpel.studio.photoError": "请使用 10 MB 以内、每边至少 300 像素的 JPG、PNG 或 WebP 照片。",
   "rumpel.studio.preparing": "正在处理照片…",
   "rumpel.studio.consent": "我有权使用这两张照片，且照片中的人已同意出现在 AI 生成的视频中。",
-  "rumpel.studio.needPhotos": "上传两张照片后继续"
+  "rumpel.studio.needPhotos": "上传两张照片后继续",
+  "rumpel.studio.quality": "分辨率",
+  "rumpel.studio.quality480": "480p · 草稿",
+  "rumpel.studio.quality720": "720p · 高清",
+  "landing.pricing.hd_price": "720p：5 秒 {credits} 积分。生成前可查看本次准确扣费。",
+  "landing.pricing.credit_value": "100 积分 = 1 美元。一次性积分永久有效，生成失败自动退还。",
+  "landing.pricing.feature_monthly_expiry": "每月积分在当前账期结束时到期"
 }

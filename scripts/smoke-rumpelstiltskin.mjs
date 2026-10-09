@@ -80,7 +80,7 @@ const status = await request('/api/rumpelstiltskin/status');
 assert.equal(status.status, 200);
 const { data } = await status.json();
 assert.equal(data.configured, false);
-assert.deepEqual(data.costs, { 5: 40, 8: 60 });
+assert.deepEqual(data.costs, { 5: 167, 10: 333 });
 for (const path of [
   '/api/rumpelstiltskin/videos',
   '/api/rumpelstiltskin/task?id=unknown',

@@ -4,10 +4,13 @@ import test from 'node:test';
 import { AIMediaType, FalProvider } from '@/core/ai';
 import { EvoLinkProvider } from '@/core/ai/evolink';
 import type { AiTask } from '@/config/db/schema';
+import { pricingCatalog } from '@/config/pricing';
 import {
+  GENERATION_MARKUP,
   generationCredits,
   RUMPELSTILTSKIN_LEGACY_MODEL,
   RUMPELSTILTSKIN_MODEL,
+  USD_PER_CREDIT,
 } from '@/config/rumpelstiltskin';
 import { submitPerformance } from '@/modules/rumpelstiltskin/service';
 
@@ -40,12 +43,15 @@ test('generation rejects arbitrary models, unsupported options and oversized pro
     { ...input, prompt: 'x'.repeat(1801) },
   ])
     assert.equal(generateInput.safeParse(invalid).success, false);
-  assert.equal(generationCredits({ rumpelstiltskin_credits_5s: '-40' }, 5), 40);
+  assert.equal(
+    generationCredits({ rumpelstiltskin_credits_5s: '-40' }, 5),
+    167
+  );
   assert.equal(
     generationCredits({ rumpelstiltskin_credits_10s: '75' }, 10),
-    75
+    333
   );
-  assert.equal(generationCredits({}, 10), 80);
+  assert.equal(generationCredits({}, 10), 333);
 });
 
 test('task ownership, product scope and output URLs are enforced', () => {
@@ -161,4 +167,42 @@ test('EvoLink submission uploads both portraits in order and pins the model', as
   } finally {
     globalThis.fetch = originalFetch;
   }
+});
+
+test('every visible package sells credits at the fixed denomination; cost markup is enforced', () => {
+  for (const id of [
+    'pack_starter',
+    'pack_standard',
+    'pack_pro',
+    'basic_monthly',
+    'pro_monthly',
+    'studio_monthly',
+  ]) {
+    const product = pricingCatalog[id];
+    assert.equal(product.priceInCents / 100 / product.credits, USD_PER_CREDIT);
+    assert.equal(product.creditsValidDays, product.plan ? 31 : undefined);
+  }
+  assert.equal(GENERATION_MARKUP, 7);
+  assert.equal(generationCredits({}, 5, '720p'), 350);
+  assert.equal(generationCredits({}, 10, '720p'), 700);
+  assert.equal(
+    generationCredits({ seedance_mini_480p_usd_per_second: '0.019' }, 5),
+    67
+  );
+  assert.equal(
+    generationCredits({ seedance_mini_480p_usd_per_second: '0.019' }, 10),
+    133
+  );
+  assert.equal(
+    generationCredits({ seedance_mini_480p_usd_per_second: '-1' }, 5),
+    167
+  );
+  assert.equal(
+    generateInput.safeParse({ ...input, quality: '720p' }).success,
+    true
+  );
+  assert.equal(
+    generateInput.safeParse({ ...input, quality: '1080p' }).success,
+    false
+  );
 });

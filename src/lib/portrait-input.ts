@@ -8,6 +8,8 @@ export async function preparePortrait(file: File) {
   const bitmap = await createImageBitmap(file);
   try {
     if (Math.min(bitmap.width, bitmap.height) < 300) throw new Error('small');
+    const ratio = bitmap.width / bitmap.height;
+    if (ratio < 0.4 || ratio > 2.5) throw new Error('ratio');
     const scale = Math.min(1, 1600 / Math.max(bitmap.width, bitmap.height));
     const canvas = document.createElement('canvas');
     canvas.width = Math.round(bitmap.width * scale);

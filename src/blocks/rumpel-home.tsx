@@ -77,7 +77,6 @@ export function RumpelHeader() {
             name={user.name || user.email}
             email={user.email}
             image={user.image}
-            triggerLabel={m['rumpel.nav.signed_in']()}
           />
         )}
         <button

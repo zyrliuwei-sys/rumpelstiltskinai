@@ -13,6 +13,7 @@ import { z } from 'zod';
 
 import { useSession } from '@/core/auth/client';
 import { Link } from '@/core/i18n/navigation';
+import { type RumpelstiltskinQuality } from '@/config/rumpelstiltskin';
 import { apiGet, apiPost } from '@/lib/api-client';
 import { preparePortrait } from '@/lib/portrait-input';
 import { m } from '@/paraglide/messages.js';
@@ -32,6 +33,7 @@ type StudioStatus = {
   configured: boolean;
   costCredits: number;
   costs?: { 5: number; 10: number };
+  qualityCosts?: Record<RumpelstiltskinQuality, { 5: number; 10: number }>;
   model: string;
 };
 const pendingStatuses = ['pending', 'processing', 'queued'];
@@ -49,6 +51,7 @@ function safeVideoUrl(value?: string | null) {
 export function RumpelStudio({ publicPage = false }: { publicPage?: boolean }) {
   const { data: session, isPending: sessionPending } = useSession();
   const queryClient = useQueryClient();
+  const [quality, setQuality] = useState<RumpelstiltskinQuality>('480p');
   const [duration, setDuration] = useState<5 | 10>(10);
   const [photos, setPhotos] = useState<[string | null, string | null]>([
     null,
@@ -71,12 +74,29 @@ export function RumpelStudio({ publicPage = false }: { publicPage?: boolean }) {
         preset: 'custom',
         duration,
         aspectRatio,
+        quality,
+        expectedCredits:
+          statusQuery.data?.qualityCosts?.[quality]?.[duration] ??
+          statusQuery.data?.costs?.[duration],
         photoA: photos[0],
         photoB: photos[1],
         consent,
       }),
+    onError: () => {
+      void queryClient.invalidateQueries({
+        queryKey: ['rumpel-studio-status'],
+      });
+    },
     onSuccess: (task) => {
       setSubmittedTask(task);
+      try {
+        window.sessionStorage.setItem(
+          `rumpel-task-${session?.user.id}`,
+          task.id
+        );
+      } catch {
+        /* Storage is optional. */
+      }
       void queryClient.invalidateQueries({ queryKey: ['user-credits'] });
       void queryClient.invalidateQueries({
         queryKey: ['rumpelstiltskin-videos'],
@@ -84,7 +104,7 @@ export function RumpelStudio({ publicPage = false }: { publicPage?: boolean }) {
     },
   });
   const taskQuery = useQuery({
-    queryKey: ['rumpel-task', submittedTask?.id],
+    queryKey: ['rumpel-task', session?.user.id, submittedTask?.id],
     queryFn: () =>
       apiGet<Task>(
         `/api/rumpelstiltskin/task?id=${encodeURIComponent(submittedTask!.id)}`
@@ -145,7 +165,25 @@ export function RumpelStudio({ publicPage = false }: { publicPage?: boolean }) {
   }, []);
 
   useEffect(() => {
+    setSubmittedTask(null);
+    if (!session?.user.id) return;
+    try {
+      const id = window.sessionStorage.getItem(
+        `rumpel-task-${session.user.id}`
+      );
+      if (id) setSubmittedTask({ id, status: 'pending' });
+    } catch {
+      /* Storage is optional. */
+    }
+  }, [session?.user.id]);
+
+  useEffect(() => {
     if (task && !pendingStatuses.includes(task.status)) {
+      try {
+        window.sessionStorage.removeItem(`rumpel-task-${session?.user.id}`);
+      } catch {
+        /* Storage is optional. */
+      }
       void queryClient.invalidateQueries({
         queryKey: ['rumpelstiltskin-videos'],
       });
@@ -192,7 +230,9 @@ export function RumpelStudio({ publicPage = false }: { publicPage?: boolean }) {
   const controlClass =
     'w-full rounded-xl border border-border bg-background px-3 py-3 text-sm text-foreground outline-none transition-colors focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-primary/30 disabled:opacity-50';
   const cost =
-    statusQuery.data?.costs?.[duration] ?? statusQuery.data?.costCredits;
+    statusQuery.data?.qualityCosts?.[quality]?.[duration] ??
+    statusQuery.data?.costs?.[duration] ??
+    statusQuery.data?.costCredits;
 
   return (
     <div
@@ -371,6 +411,27 @@ export function RumpelStudio({ publicPage = false }: { publicPage?: boolean }) {
                     </option>
                   </select>
                 </div>
+              </div>
+              <div className="space-y-2">
+                <label htmlFor="rumpel-quality" className="text-sm font-medium">
+                  {m['rumpel.studio.quality']()}
+                </label>
+                <select
+                  id="rumpel-quality"
+                  value={quality}
+                  disabled={active}
+                  onChange={(event) =>
+                    setQuality(event.target.value as RumpelstiltskinQuality)
+                  }
+                  className={controlClass}
+                >
+                  <option value="480p">
+                    {m['rumpel.studio.quality480']()}
+                  </option>
+                  <option value="720p">
+                    {m['rumpel.studio.quality720']()}
+                  </option>
+                </select>
               </div>
               {statusQuery.isPending && (
                 <p

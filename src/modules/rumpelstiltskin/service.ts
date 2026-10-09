@@ -2,6 +2,7 @@ import { EvoLinkProvider } from '@/core/ai/evolink';
 import {
   RUMPELSTILTSKIN_MODEL,
   type RumpelstiltskinDuration,
+  type RumpelstiltskinQuality,
   type RumpelstiltskinRatio,
 } from '@/config/rumpelstiltskin';
 
@@ -18,18 +19,40 @@ export async function submitPerformance(
     prompt: string;
     duration: RumpelstiltskinDuration;
     aspectRatio: RumpelstiltskinRatio;
+    quality?: RumpelstiltskinQuality;
   }
 ) {
-  // Upload sequentially: stay below provider concurrency/quota limits.
+  const images = await uploadPerformancePhotos(provider, params);
+  return submitPreparedPerformance(provider, { ...params, images });
+}
+
+/** Uploads cannot create a paid video job; finish them before reserving credits. */
+export async function uploadPerformancePhotos(
+  provider: EvoLinkProvider,
+  params: { photoA: string; photoB: string }
+) {
   const a = await provider.uploadPhoto(params.photoA);
   const b = await provider.uploadPhoto(params.photoB);
+  return [a, b] as [string, string];
+}
+
+export function submitPreparedPerformance(
+  provider: EvoLinkProvider,
+  params: {
+    images: [string, string];
+    prompt: string;
+    duration: RumpelstiltskinDuration;
+    aspectRatio: RumpelstiltskinRatio;
+    quality?: RumpelstiltskinQuality;
+  }
+) {
   return provider.generateVideo({
     model: RUMPELSTILTSKIN_MODEL,
     prompt: barnPerformancePrompt(params.prompt, params.duration),
-    image_urls: [a, b],
+    image_urls: params.images,
     duration: params.duration,
     aspect_ratio: params.aspectRatio,
-    quality: '480p',
+    quality: params.quality ?? '480p',
     generate_audio: false,
     content_filter: true,
   });

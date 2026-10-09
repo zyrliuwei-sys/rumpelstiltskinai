@@ -80,13 +80,18 @@ export function Pricing({
   const { data: priceData } = useQuery({
     queryKey: ['rumpel-studio-status'],
     queryFn: () =>
-      apiGet<{ costCredits: number; costs?: Record<string, number> }>(
-        '/api/rumpelstiltskin/status'
-      ),
+      apiGet<{
+        costCredits: number;
+        costs?: Record<string, number>;
+        qualityCosts?: Record<string, Record<string, number>>;
+      }>('/api/rumpelstiltskin/status'),
     staleTime: 10 * 60_000,
   });
   const perVideo = priceData?.costCredits ?? generationCredits({}, 5);
   const perLongVideo = priceData?.costs?.['10'] ?? generationCredits({}, 10);
+  const perHdVideo =
+    priceData?.qualityCosts?.['720p']?.['5'] ??
+    generationCredits({}, 5, '720p');
 
   function features(credits: number, extra: PricingFeature[]) {
     return [
@@ -152,6 +157,7 @@ export function Pricing({
       priceInCents: product.priceInCents,
       currency: product.currency,
       credits: product.credits,
+      creditsValidDays: product.creditsValidDays,
       plan: product.plan,
       buttonText: product.plan ? undefined : m['landing.pricing.buy_now'](),
     };
@@ -170,6 +176,10 @@ export function Pricing({
       label: m['landing.pricing.feature_monthly_refill'](),
     },
     { icon: XCircle, label: m['landing.pricing.feature_cancel']() },
+    {
+      icon: CalendarClock,
+      label: m['landing.pricing.feature_monthly_expiry'](),
+    },
   ];
   const tiers = [
     ['basic', m['landing.pricing.basic'](), m['landing.pricing.basic_desc']()],
@@ -200,11 +210,6 @@ export function Pricing({
       key: 'one-time',
       label: m['landing.pricing.one_time'](),
       plans: [
-        plan('pack_single', {
-          name: m['landing.pricing.pack_single'](),
-          description: m['landing.pricing.pack_single_desc'](),
-          extra: packExtra,
-        }),
         plan('pack_starter', {
           name: m['landing.pricing.pack_starter'](),
           description: m['landing.pricing.pack_desc'](),
@@ -333,11 +338,22 @@ export function Pricing({
               long: perLongVideo.toLocaleString('en-US'),
             })}
           </p>
+          <p className="text-muted-foreground mt-2 text-xs">
+            {m['landing.pricing.hd_price']({
+              credits: perHdVideo.toLocaleString('en-US'),
+            })}
+          </p>
+          <p className="text-muted-foreground mt-2 text-xs">
+            {m['landing.pricing.credit_value']()}
+          </p>
         </div>
         <PricingTable
           groups={groups}
           defaultGroup="one-time"
           onCheckout={handleCheckout}
+          checkoutPending={checkoutMutation.isPending}
+          processingLabel={m['common.pricing.processing']()}
+          buttonLabel={m['common.pricing.get_started']()}
         />
       </div>
 

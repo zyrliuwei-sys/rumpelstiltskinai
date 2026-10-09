@@ -963,7 +963,7 @@
   "landing.pricing.feature_yearly_upfront": "All 12 months of credits upfront",
   "landing.pricing.feature_monthly_refill": "Credits refill every month",
   "landing.pricing.feature_no_subscription": "No subscription",
-  "landing.pricing.feature_hd": "720p portrait or landscape video",
+  "landing.pricing.feature_hd": "480p or 720p · portrait or landscape",
   "landing.pricing.feature_credits": "{credits} credits",
   "landing.pricing.studio_desc": "For creators and small teams",
   "landing.pricing.studio": "Studio",
@@ -1223,7 +1223,7 @@
   "hotel.create.length_seconds": "{seconds}s",
   "hotel.create.length_credits": "credits",
   "landing.pricing.feature_videos_lengths": "About {short} x 5s or {long} x 10s videos",
-  "landing.pricing.per_video_lengths": "5 seconds: {short} credits. 10 seconds: {long} credits.",
+  "landing.pricing.per_video_lengths": "480p: {short} credits for 5s · {long} credits for 10s",
   "landing.pricing.feature_videos_short_only": "About {short} x 5s videos (10s needs {credits} credits)",
   "landing.pricing.pack_single": "Mini Pack",
   "landing.pricing.pack_single_desc": "Start your next fairytale",
@@ -1239,5 +1239,11 @@
   "rumpel.studio.photoError": "Use a JPG, PNG or WebP photo under 10 MB, at least 300 px on each side.",
   "rumpel.studio.preparing": "Preparing photo…",
   "rumpel.studio.consent": "I have the right to use both photos and the people shown have agreed to appear in an AI-generated video.",
-  "rumpel.studio.needPhotos": "Add two photos to continue"
+  "rumpel.studio.needPhotos": "Add two photos to continue",
+  "rumpel.studio.quality": "Resolution",
+  "rumpel.studio.quality480": "480p · Draft",
+  "rumpel.studio.quality720": "720p · HD",
+  "landing.pricing.hd_price": "720p: {credits} credits for 5s. See your exact cost before generating.",
+  "landing.pricing.credit_value": "100 credits = $1. One-time credits never expire. Failed generations are refunded.",
+  "landing.pricing.feature_monthly_expiry": "Monthly credits expire at the end of each billing period"
 }

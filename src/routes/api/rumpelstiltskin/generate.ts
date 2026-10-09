@@ -16,7 +16,10 @@ import {
 } from '@/modules/ai-tasks/service';
 import { getAllConfigs } from '@/modules/config/service';
 import { getBalance } from '@/modules/credits/service';
-import { submitPerformance } from '@/modules/rumpelstiltskin/service';
+import {
+  submitPreparedPerformance,
+  uploadPerformancePhotos,
+} from '@/modules/rumpelstiltskin/service';
 import { enforceMinIntervalRateLimit } from '@/lib/rate-limit';
 import { respData, respErr } from '@/lib/resp';
 
@@ -56,7 +59,7 @@ async function POST({ request }: { request: Request }) {
         'Upload two valid portraits, confirm consent, and select a supported duration and ratio',
         { status: 400 }
       );
-    const { prompt, duration, aspectRatio, preset, photoA, photoB } =
+    const { prompt, duration, aspectRatio, preset, photoA, photoB, quality } =
       parsed.data;
     const configs = await getAllConfigs();
     if (!configs.evolink_api_key?.trim())
@@ -64,7 +67,15 @@ async function POST({ request }: { request: Request }) {
         'An administrator must add an EvoLink API key in Settings. No credits were charged.',
         { status: 503 }
       );
-    const costCredits = generationCredits(configs, duration);
+    const costCredits = generationCredits(configs, duration, quality);
+    if (
+      parsed.data.expectedCredits !== undefined &&
+      parsed.data.expectedCredits !== costCredits
+    )
+      return respErr(
+        'Generation price changed. Review the updated cost and try again. No credits were charged.',
+        { status: 409 }
+      );
     if ((await getBalance(session.user.id)) < costCredits)
       return respErr('Insufficient credits', { status: 402 });
     const throttled = enforceMinIntervalRateLimit(request, {
@@ -76,6 +87,16 @@ async function POST({ request }: { request: Request }) {
       return respErr('Please wait a few seconds before generating again', {
         status: 429,
       });
+    const provider = new EvoLinkProvider(configs.evolink_api_key);
+    let images: [string, string];
+    try {
+      images = await uploadPerformancePhotos(provider, { photoA, photoB });
+    } catch {
+      return respErr(
+        'Unable to upload portraits. No credits were charged. Please try again.',
+        { status: 502 }
+      );
+    }
     const task = await createTask({
       userId: session.user.id,
       mediaType: AIMediaType.VIDEO,
@@ -90,14 +111,15 @@ async function POST({ request }: { request: Request }) {
         preset,
         duration,
         aspectRatio,
+        quality,
+        costCredits,
       });
-      const provider = new EvoLinkProvider(configs.evolink_api_key);
-      const result = await submitPerformance(provider, {
-        photoA,
-        photoB,
+      const result = await submitPreparedPerformance(provider, {
+        images,
         prompt,
         duration,
         aspectRatio,
+        quality,
       });
       await setProviderTaskId(task.id, result.id);
       return respData({ id: task.id, status: AITaskStatus.PENDING });
@@ -123,7 +145,12 @@ async function POST({ request }: { request: Request }) {
       error instanceof Error && error.message === 'Insufficient credits'
         ? 'Insufficient credits'
         : 'Unable to start generation',
-      { status: 500 }
+      {
+        status:
+          error instanceof Error && error.message === 'Insufficient credits'
+            ? 402
+            : 500,
+      }
     );
   }
 }

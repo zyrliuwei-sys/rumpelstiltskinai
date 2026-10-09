@@ -19,7 +19,7 @@ const CACHE_TTL = 60_000; // 1 minute
 /**
  * Get all configs from database.
  */
-export async function getDbConfigs(): Promise<ConfigMap> {
+export async function getDbConfigs(required = false): Promise<ConfigMap> {
   const now = Date.now();
   if (cachedConfigs && now - cacheTime < CACHE_TTL) {
     return cachedConfigs;
@@ -51,7 +51,10 @@ export async function getDbConfigs(): Promise<ConfigMap> {
     cachedConfigs = result;
     cacheTime = now;
     return result;
-  } catch {
+  } catch (error) {
+    // Remote D1 credentials/availability failures must not masquerade as an
+    // empty admin configuration (which disables a correctly configured API).
+    if (required) throw error;
     return {};
   }
 }
@@ -59,8 +62,10 @@ export async function getDbConfigs(): Promise<ConfigMap> {
 /**
  * Get all configs merged: env + database (database overrides env).
  */
-export async function getAllConfigs(): Promise<ConfigMap> {
-  const dbConfigs = await getDbConfigs();
+export async function getAllConfigs(
+  options: { required?: boolean } = {}
+): Promise<ConfigMap> {
+  const dbConfigs = await getDbConfigs(options.required);
   return { ...envConfigs, ...dbConfigs, ...getDevConfigOverrides() };
 }
 

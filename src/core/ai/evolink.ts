@@ -3,6 +3,13 @@ export type EvoLinkTask = {
   id: string;
   status: 'pending' | 'processing' | 'completed' | 'failed' | 'cancelled';
   results?: string[];
+  progress?: number;
+  error?: { code?: string; message?: string };
+  usage?: {
+    credits_reserved?: number;
+    credits_used?: number;
+    cost?: { usd?: number; credits?: number };
+  };
 };
 export class EvoLinkHttpError extends Error {
   constructor(public status: number) {

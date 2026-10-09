@@ -1032,6 +1032,16 @@ export function getSettings(): Setting[] {
       tab: 'ai',
     },
 
+    ...(['480p', '720p'] as const).map((quality) => ({
+      name: `seedance_mini_${quality}_usd_per_second`,
+      title: `Seedance Mini ${quality} cost (USD / second)`,
+      type: 'number' as const,
+      placeholder: quality === '480p' ? '0.0475' : '0.10',
+      tip: 'Verified account rate for image references. User charge = cost × 7; 1 credit = $0.01. Leave empty for the undiscounted public rate.',
+      group: 'evolink',
+      tab: 'ai',
+    })),
+
     // ─── Analytics / Google Analytics ────────────────────────────────
     {
       name: 'google_analytics_id',

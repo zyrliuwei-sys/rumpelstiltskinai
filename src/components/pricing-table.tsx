@@ -1,13 +1,7 @@
-'use client';
-
 import { useState, type ComponentType, type SVGProps } from 'react';
-import { useMutation } from '@tanstack/react-query';
 import { Check, Gift } from 'lucide-react';
 
-import { apiPost } from '@/lib/api-client';
-import { currentPathWithQuery } from '@/lib/redirect';
 import { cn } from '@/lib/utils';
-import { m } from '@/paraglide/messages.js';
 import { Button } from '@/components/ui/button';
 
 type IconComponent = ComponentType<SVGProps<SVGSVGElement>>;
@@ -57,59 +51,24 @@ export function PricingTable({
   groups,
   defaultGroup,
   onCheckout,
+  checkoutPending = false,
+  processingLabel,
+  buttonLabel,
 }: {
   groups: PricingGroup[];
   /** Key of the tab shown first; falls back to the first group. */
   defaultGroup?: string;
-  onCheckout?: (plan: PricingPlan) => void;
+  onCheckout: (plan: PricingPlan) => void;
+  checkoutPending?: boolean;
+  processingLabel: string;
+  buttonLabel: string;
 }) {
   const [activeGroup, setActiveGroup] = useState(
     defaultGroup && groups.some((g) => g.key === defaultGroup)
       ? defaultGroup
       : groups[0]?.key || ''
   );
-  const [loadingId, setLoadingId] = useState<string | null>(null);
-
   const currentGroup = groups.find((g) => g.key === activeGroup) || groups[0];
-
-  const checkoutMutation = useMutation({
-    mutationFn: (plan: PricingPlan) =>
-      apiPost<{ checkout_url?: string }>('/api/payment/checkout', {
-        product_id: plan.productId,
-        product_name: plan.productName || plan.name,
-        plan_name: plan.plan?.name || plan.name,
-        price: plan.priceInCents,
-        currency: plan.currency || 'usd',
-        type: plan.plan ? 'subscription' : 'one-time',
-        description: plan.name,
-        plan: plan.plan,
-        credits: plan.credits,
-        credits_valid_days: plan.creditsValidDays,
-        payment_provider: plan.paymentProvider || 'stripe',
-        // Come back to the page the user paid from.
-        redirect: currentPathWithQuery('/settings/billing'),
-      }),
-    onSuccess: (data) => {
-      if (data?.checkout_url) {
-        window.location.href = data.checkout_url;
-      }
-    },
-    onSettled: () => {
-      setLoadingId(null);
-    },
-  });
-
-  function handleCheckout(plan: PricingPlan) {
-    if (onCheckout) {
-      onCheckout(plan);
-      return;
-    }
-
-    if (!plan.productId || !plan.priceInCents) return;
-
-    setLoadingId(plan.id);
-    checkoutMutation.mutate(plan);
-  }
 
   return (
     <div className="space-y-10">
@@ -120,6 +79,8 @@ export function PricingTable({
             {groups.map((group) => (
               <button
                 key={group.key}
+                type="button"
+                aria-pressed={activeGroup === group.key}
                 onClick={() => setActiveGroup(group.key)}
                 className={cn(
                   'rounded-full px-5 py-1.5 text-sm font-medium transition-colors',
@@ -218,12 +179,12 @@ export function PricingTable({
             <Button
               variant={plan.featured || plan.highlight ? 'default' : 'outline'}
               className="h-10 w-full rounded-full text-sm font-medium"
-              onClick={() => handleCheckout(plan)}
-              disabled={loadingId === plan.id}
+              onClick={() => onCheckout(plan)}
+              disabled={checkoutPending}
             >
-              {loadingId === plan.id
-                ? m['common.pricing.processing']()
-                : plan.buttonText || m['common.pricing.get_started']()}
+              {checkoutPending
+                ? processingLabel
+                : plan.buttonText || buttonLabel}
             </Button>
 
             {/* Features */}

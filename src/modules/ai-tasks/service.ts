@@ -108,7 +108,18 @@ export async function updateTask(params: {
     updateData.taskResult = JSON.stringify(taskResult);
   }
 
-  await db().update(aiTask).set(updateData).where(eq(aiTask.id, taskId));
+  // Polls can overlap. Terminal tasks must never regress or refund twice.
+  const updated = await db()
+    .update(aiTask)
+    .set(updateData)
+    .where(
+      and(
+        eq(aiTask.id, taskId),
+        inArray(aiTask.status, [AITaskStatus.PENDING, AITaskStatus.PROCESSING])
+      )
+    )
+    .returning({ id: aiTask.id });
+  if (!updated.length) return;
 
   // Revoke credits on failure
   if (status === AITaskStatus.FAILED && task.taskInfo) {

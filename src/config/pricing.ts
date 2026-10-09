@@ -34,7 +34,7 @@ export type PricingProduct = {
  * status endpoint; each package can fund different clip lengths.
  *
  * Pricing floor: no product may sell credits below $0.01 each, so every
- * video is sold at ≥ 7× its fal cost. That is why there are no discounted
+ * video is sold at ≥ 7× its provider cost. That is why there are no discounted
  * yearly plans — check priceInCents / credits ≥ 0.01 before adding a product.
  * Keys MUST match what the pricing UI sends as product_id.
  */
@@ -58,7 +58,7 @@ export const pricingCatalog: Record<string, PricingProduct> = {
     type: PaymentType.ONE_TIME,
     priceInCents: 990,
     currency: 'usd',
-    credits: 880,
+    credits: 990,
   },
   pack_standard: {
     productId: 'pack_standard',
@@ -68,7 +68,7 @@ export const pricingCatalog: Record<string, PricingProduct> = {
     type: PaymentType.ONE_TIME,
     priceInCents: 2300,
     currency: 'usd',
-    credits: 2200,
+    credits: 2300,
   },
   pack_pro: {
     productId: 'pack_pro',
@@ -85,10 +85,11 @@ export const pricingCatalog: Record<string, PricingProduct> = {
     productName: 'Basic',
     planName: 'Basic Monthly',
     description: 'Basic Monthly',
+    creditsValidDays: 31,
     type: PaymentType.SUBSCRIPTION,
     priceInCents: 2300,
     currency: 'usd',
-    credits: 2200,
+    credits: 2300,
     plan: {
       name: 'Basic',
       interval: PaymentInterval.MONTH,
@@ -100,6 +101,7 @@ export const pricingCatalog: Record<string, PricingProduct> = {
     productName: 'Pro',
     planName: 'Pro Monthly',
     description: 'Pro Monthly',
+    creditsValidDays: 31,
     type: PaymentType.SUBSCRIPTION,
     priceInCents: 4400,
     currency: 'usd',
@@ -115,6 +117,7 @@ export const pricingCatalog: Record<string, PricingProduct> = {
     productName: 'Studio',
     planName: 'Studio Monthly',
     description: 'Studio Monthly',
+    creditsValidDays: 31,
     type: PaymentType.SUBSCRIPTION,
     priceInCents: 8800,
     currency: 'usd',
