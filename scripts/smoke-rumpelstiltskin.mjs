@@ -63,8 +63,8 @@ for (const path of [
       .trim();
     const words = text.split(/\s+/).length;
     assert.ok(
-      words >= 1150 && words <= 1300,
-      `Homepage has ${words} words, expected about 1200`
+      words >= 1150 && words <= 1550,
+      `Homepage has ${words} words, expected about 1200 editorial words plus pricing`
     );
     assert.match(text, /Rumpelstiltskin AI video/i);
     assert.ok(!/[—–]/.test(text), 'No decorative em-dashes');

@@ -315,7 +315,9 @@ export function Pricing({
     <Wrapper
       id={dialog ? undefined : 'pricing'}
       className={
-        dialog ? undefined : 'border-border border-t px-4 py-24 sm:py-32'
+        dialog
+          ? undefined
+          : 'border-border scroll-mt-8 border-t px-4 py-24 sm:py-32'
       }
     >
       <div className="mx-auto max-w-5xl">

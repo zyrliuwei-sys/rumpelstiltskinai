@@ -11,9 +11,10 @@ import {
 } from 'lucide-react';
 
 import { useSession } from '@/core/auth/client';
-import { Link, useRouter } from '@/core/i18n/navigation';
+import { Link, usePathname, useRouter } from '@/core/i18n/navigation';
 import { envConfigs } from '@/config';
 import { m } from '@/paraglide/messages.js';
+import { Pricing } from '@/blocks/pricing';
 import {
   RumpelIntroduction,
   RumpelPromptGuide,
@@ -38,6 +39,7 @@ function startPreset(preset: string, prompt: string) {
 }
 
 export function RumpelHeader() {
+  const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const { data: session, isPending: sessionPending } = useSession();
   const user = session?.user;
@@ -45,7 +47,10 @@ export function RumpelHeader() {
     { href: '/create', label: m['rumpel.nav.studio']() },
     { href: '/#inspiration', label: m['rumpel.nav.templates']() },
     { href: '/#how-it-works', label: m['rumpel.nav.how']() },
-    { href: '/pricing', label: m['landing.nav.pricing']() },
+    {
+      href: pathname === '/' ? '#pricing' : '/#pricing',
+      label: m['landing.nav.pricing'](),
+    },
   ];
   return (
     <header className="rumpel-nav">
@@ -160,10 +165,16 @@ export function RumpelHero() {
           <p className="rumpel-hero-description">
             {m['rumpel.hero.description']()}
           </p>
-          <Link href="/create" className="rumpel-button">
-            {m['rumpel.hero.cta']()}
-            <ArrowUpRight size={18} />
-          </Link>
+          <div className="flex flex-wrap items-center gap-5">
+            <Link href="/create" className="rumpel-button">
+              {m['rumpel.hero.cta']()}
+              <ArrowUpRight size={18} />
+            </Link>
+            <Link href="#pricing" className="rumpel-text-link">
+              {m['landing.nav.pricing']()}
+              <ArrowRight size={17} />
+            </Link>
+          </div>
         </div>
         <form
           className="rumpel-prompt-box"
@@ -480,6 +491,7 @@ export function RumpelFooter() {
         </div>
         <div>
           <span>{m['rumpel.footer.help']()}</span>
+          <Link href="/#pricing">{m['landing.nav.pricing']()}</Link>
           <Link href="/#faq">{m['rumpel.faq.title']()}</Link>
           <Link href="/settings/tickets">{m['rumpel.footer.support']()}</Link>
           <a href="mailto:support@rumpelstiltskinai.org">
@@ -510,6 +522,7 @@ export function RumpelHome() {
         <RumpelHero />
         <RumpelIntroduction />
         <RumpelInspiration />
+        <Pricing />
         <RumpelFeatures />
         <RumpelHow />
         <RumpelPromptGuide />
